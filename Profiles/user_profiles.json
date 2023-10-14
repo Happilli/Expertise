@@ -1,0 +1,62 @@
+{
+    "847390611136970764": {
+        "image_path": "Profiles/847390611136970764.png",
+        "title": "Conqueror",
+        "background_url": "./Assets/Backgrounds/1.jpg",
+        "rank": "Nobda"
+    },
+    "768085495972102144": {
+        "image_path": "Profiles/768085495972102144.png",
+        "title": "Slayer",
+        "background_url": "./Assets/Backgrounds/50.jpg",
+        "rank": "Nobda"
+    },
+    "1145682914483392624": {
+        "image_path": "Profiles/1145682914483392624.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/62.jpg",
+        "rank": "Nobda"
+    },
+    "924305166692397058": {
+        "image_path": "Profiles/924305166692397058.png",
+        "title": "Royal",
+        "background_url": "./Assets/Backgrounds/64.jpg",
+        "rank": "Wooden",
+        "background_description": "Rias gremory"
+    },
+    "954972454609113119": {
+        "image_path": "Profiles/954972454609113119.png",
+        "title": "Royal",
+        "background_url": "./Assets/Backgrounds/20.jpg",
+        "rank": "Nobda",
+        "background_description": "Itachi"
+    },
+    "1025657144403558520": {
+        "image_path": "Profiles/1025657144403558520.png",
+        "title": "Dragon",
+        "background_url": "./Assets/Backgrounds/71.jpg",
+        "rank": "Nobda",
+        "background_description": "denji puccita chainsaw form"
+    },
+    "833005129112354876": {
+        "image_path": "Profiles/833005129112354876.png",
+        "title": "Divine",
+        "background_url": "./Assets/Backgrounds/23.jpg",
+        "rank": "Nobda",
+        "background_description": "miles morales"
+    },
+    "1128651413535346708": {
+        "image_path": "Profiles/1128651413535346708.png",
+        "title": "Malice",
+        "background_url": "./Assets/Backgrounds/2.jpg",
+        "rank": "Wooden",
+        "background_description": "Xenoverse Goku"
+    },
+    "1096342703870050364": {
+        "image_path": "Profiles/1096342703870050364.png",
+        "title": "Ninja",
+        "background_url": "./Assets/Backgrounds/37.jpg",
+        "rank": "Noob",
+        "background_description": "boob lordess"
+    }
+}
