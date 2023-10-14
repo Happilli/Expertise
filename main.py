@@ -17,6 +17,7 @@ import imageio
 from discord.ext import menus
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
+
 # Define the path to the folder containing your background images
 BACKGROUND_FOLDER = './Assets/Backgrounds/'
 
