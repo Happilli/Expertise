@@ -2,8 +2,9 @@
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
         "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
+        "background_url": "./Assets/Backgrounds/5.jpg",
         "rank": "Noob",
-        "card_url": "./Assets/Cards/2.jpg"
+        "card_url": "./Assets/Cards/2.jpg",
+        "background_description": "Asta"
     }
 }
