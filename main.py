@@ -14,6 +14,7 @@ import replit
 import requests
 from webserver import keep_alive
 from discord.ext.commands import check
+import imageio
 
 # Define the path to the folder containing your background images
 BACKGROUND_FOLDER = './Assets/Backgrounds/'
@@ -757,6 +758,156 @@ async def buybg(ctx, background_id: int):
         await ctx.send("Invalid background ID.")
 
 
+# Define the path to the folder containing card images
+card_folder = './Assets/Cards/'  # Update with your actual path
+
+# Define card information with descriptions and prices
+card_info = {
+    "1.jpg": {"name": "Sasuke", "description": "Akatsuki version", "price": 5100},
+    "2.jpg": {"name": "Goku", "description": "version Ultra instinct !", "price": 15000},
+    "3.jpg": {"name": "Gojo", "description": "Gojo the free version", "price": 20000},
+    # Add more cards as needed
+}
+
+@bot.command(name='cardshop')
+@is_registered()
+async def card_shop(ctx):
+    user_id = str(ctx.author.id)
+
+    # Load the currency data from the JSON file
+    with open('Currency/currency.json', 'r') as currency_file:
+        currency_data = json.load(currency_file)
+
+    # Create an embedded message to display the card shop
+    embed = discord.Embed(
+        title='Card Shop',
+        description='To buy a card, use **e!buycard [name]**. Here are the available cards:',
+        color=discord.Color.blue()  # Customize the color
+    )
+
+    for card_name, card_data in card_info.items():
+        name = card_data.get("name", "Unnamed Card")
+        description = card_data.get("description", "No description available")
+        price = card_data.get("price", 0)
+
+        if currency_data.get(user_id, 0) >= price:
+            availability = "Available"
+        else:
+            availability = "Not Enough Redants"
+
+        embed.add_field(
+            name=name,
+            value=f'Description: {description}\nPrice: {price} redants\nAvailability: {availability}',
+            inline=True
+        )
+
+    # Send the embedded message
+    await ctx.send(embed=embed)
+
+
+
+@bot.command(name='cardview')
+@is_registered()
+async def view_card(ctx, *, card_name: str):
+    user_id = str(ctx.author.id)
+
+    # Normalize the input card name to lowercase for case-insensitive comparison
+    card_name_lower = card_name.lower()
+
+    # Check if the card with the provided name exists
+    matching_card = None
+    for card, card_data in card_info.items():
+        if card_data.get("name").lower() == card_name_lower:
+            matching_card = card
+            break
+
+    if matching_card:
+        card_data = card_info[matching_card]
+        name = card_data.get("name", "Unnamed Card")
+        description = card_data.get("description", "No description available")
+        price = card_data.get("price", 0)
+
+        # Load the currency data from the JSON file
+        with open('Currency/currency.json', 'r') as currency_file:
+            currency_data = json.load(currency_file)
+
+        # Check if the user has enough currency to afford the card
+        if currency_data.get(user_id, 0) >= price:
+            availability = "Available"
+        else:
+            availability = "Not Enough Redants"
+
+        # Display the card details
+        embed = discord.Embed(
+            title=f'Viewing Card: {name}',
+            description=f'Description: {description}\nPrice: {price} redants\nAvailability: {availability}\n\n',
+                        
+            color=discord.Color.blue()  # Customize the color
+        )
+
+        # Include an image of the card
+        card_path = os.path.join(card_folder, matching_card)
+        with open(card_path, 'rb') as card_file:
+            embed.set_image(url=f"attachment://{matching_card}")
+
+        # Mention the currency file
+        embed.set_footer(text="Developer : @samrick")
+
+        await ctx.send(embed=embed, file=discord.File(card_path, filename=matching_card))
+    else:
+        await ctx.send("Card not found. Please check the card name and ensure it's spelled correctly.")
+
+# Define the constant folder path for cards
+CARD_FOLDER = './Assets/Cards/'
+
+@bot.command(name='buycard')
+@is_registered()
+async def buy_card(ctx, *, card_name: str):
+    user_id = str(ctx.author.id)
+
+    # Normalize the input card name to lowercase for case-insensitive comparison
+    card_name_lower = card_name.lower()
+
+    # Check if the card with the provided name exists
+    matching_card = None
+    for card, card_data in card_info.items():
+        if card_data.get("name").lower() == card_name_lower:
+            matching_card = card
+            break
+
+    if matching_card:
+        card_data = card_info[matching_card]
+        name = card_data.get("name", "Unnamed Card")
+        price = card_data.get("price", 0)
+        card_url = CARD_FOLDER + matching_card  # Construct the card URL based on the card name
+
+        # Load the currency data from the JSON file
+        with open('Currency/currency.json', 'r') as currency_file:
+            currency_data = json.load(currency_file)
+
+        # Check if the user has enough currency to afford the card
+        if currency_data.get(user_id, 0) >= price:
+            # Deduct the cost of the card from the user's balance
+            currency_data[user_id] = currency_data.get(user_id, 0) - price
+
+            # Update the JSON file with the new balances with proper formatting
+            with open('Currency/currency.json', 'w') as currency_file:
+                json.dump(currency_data, currency_file, indent=4)  # Indent for better readability
+
+            # Update the user's profile with the purchased card's URL
+            if user_id in user_profiles:
+                user_profiles[user_id]['card_url'] = card_url
+                save_user_profiles()
+
+                await ctx.send(
+                    f'You have successfully purchased the card: "{name}". It has been added to your profile.'
+                )
+            else:
+                await ctx.send("Your profile does not exist. Please register first.")
+        else:
+            await ctx.send("You don't have enough redants to purchase this card.")
+    else:
+        await ctx.send("Card not found. Please check the card name and ensure it's spelled correctly.")
 
 # Define the titles and their prices
 title_prices = {

@@ -47,8 +47,8 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
   if default_card_image_path:
       card_image = Image.open(default_card_image_path)
       card_image = card_image.convert("RGBA")
-      card_image = card_image.resize((360, 620), Image.NEAREST)
-      card_image = card_image.rotate(15, expand=True)
+      card_image = card_image.resize((360, 690), Image.NEAREST)
+      card_image = card_image.rotate(10, expand=True)
       card_x = 900
       card_y = separator_y - int(card_image.height * 0.60)
 
@@ -56,7 +56,7 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
 
   font_path = os.path.join('Fonts', 'Poppins.ttf')
 
-  username_font = ImageFont.truetype(font_path, 48)
+  username_font = ImageFont.truetype(font_path, 56)
   title_font = ImageFont.truetype(font_path, 42)
   rank_font = ImageFont.truetype(font_path, 36)
 
@@ -64,13 +64,16 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
   text_color = (255, 255, 255)
   outline_color = (0, 0, 0)
 
-  username_y = separator_y + 140
-  title_y = username_y + 50
-  rank_y = title_y + 45
+  username_x = avatar_x + avatar_size[0] + 20  # Adjust the X coordinate for the username
+  username_y = avatar_y + 135 # Adjust the Y coordinate for the username
+  title_x = username_x  # Keep the title in line with the username
+  title_y = username_y + 60  # Adjust the Y coordinate for the title
+  rank_x = username_x  # Keep the rank in line with the username
+  rank_y = title_y + 45  # Adjust the Y coordinate for the rank
 
-  draw.text((avatar_x, username_y), username, fill=text_color, font=username_font)
-  draw.text((avatar_x, title_y), title, fill=text_color, font=title_font)
-  draw.text((avatar_x, rank_y), rank, fill=text_color, font=rank_font)
+  draw.text((username_x, username_y), username, fill=text_color, font=username_font)
+  draw.text((title_x, title_y), title, fill=text_color, font=title_font)
+  draw.text((rank_x, rank_y), rank, fill=text_color, font=rank_font)
 
   return profile_image
 
