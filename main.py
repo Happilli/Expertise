@@ -1,22 +1,19 @@
 import os
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands, tasks, menus
 import logging
 import json
 import asyncio
+import re
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+from Convictions import registration, avatar, currency, profile, helper
+from Convictions.rank import RankFlow
+from Convictions.bgshop import show_background_shop, background_descriptions, background_prices
+from Convictions import clanwar
 import replit 
 import requests
 from webserver import keep_alive
-from Convictions import registration, avatar, currency, profile
-from Convictions import helper
 from discord.ext.commands import check
-from Convictions.rank import RankFlow
-from Convictions.bgshop import show_background_shop
-from Convictions import clanwar
-import imageio
-from discord.ext import menus
-from PIL import Image, ImageDraw, ImageFont, ImageOps
-
 
 # Define the path to the folder containing your background images
 BACKGROUND_FOLDER = './Assets/Backgrounds/'
@@ -25,178 +22,21 @@ BACKGROUND_FOLDER = './Assets/Backgrounds/'
 welcome_channel_id = 1144137252977524736  # Replace with your welcome channel ID
 farewell_channel_id = 1144162687337631764  # Replace with your farewell channel ID
 
-background_prices = {
-    1: 1000,
-    2: 2000,
-    3: 1500,
-    4: 2500,
-    5: 2500,
-    6: 4500,
-    7: 8000,
-    8: 9000,
-    9: 2000,
-    10: 1000,
-    11: 9999,
-    12: 3000,
-    13: 3500,
-    14: 6000,
-    15: 5500,
-    16: 4000,
-    17: 7000,
-    18: 5500,
-    19: 3000,
-    20: 4000,
-    21: 3500,
-    22: 4000,
-    23: 1000,
-    24: 9999,
-    25: 3000,
-    26: 3500,
-    27: 6000,
-    28: 5500,
-    29: 4000,
-    30: 7000,
-    31: 5500,
-    32: 3000,
-    33: 4000,
-    34: 3500,
-    35: 4000,
-    36: 7000,
-    37: 5500,
-    38: 3000,
-    39: 4000,
-    40: 3500,
-    41: 4000,
-    42: 5000,
-    43: 8000,
-    44: 4000,
-    45: 6000,
-    46: 5269,
-    47: 4523,
-    48: 6000,
-    49: 5269,
-    50: 4523,
-    51: 6000,
-    52: 4000,
-    53: 1500,
-    54: 2000,
-    55: 4000,
-    56: 8000,
-    57: 9000,
-    58: 4000,
-    59: 7500,
-    60: 4150,
-    61: 8000,
-    62: 4000,
-    63: 9999,
-    64: 15000,
-    65: 12000,
-    66: 8000,
-    67: 12000,
-    68: 12000,
-    69: 5600,
-    70: 7500,
-    71: 8600,
-    72: 4500,
-    73: 9990,
-    74: 10000,
-    75: 20000
-  
-}
-
-
-    # Define background descriptions (placeholders, replace with your descriptions)
-background_descriptions = {
-        1: "Gojo at Sky",
-        2: "Xenoverse Goku",
-        3: "Kakarot Goku",
-        4: "Broly",
-        5: "Asta",
-        6: "Sasuke",
-        7: "Luffy",
-        8: "Demon Slayer",
-        9: "One Piece",
-        10: "Naruto X Sasuke",
-        11: "Haxx Disaster",
-        12: "Vegeta Sad",
-        13: "Red haired Pirates",
-        14: "Yuji Itadori",
-        15: "Vegeta Thinking",
-        16: "Banner OP",
-        17: "Solo leveling",
-        18: "Satoru Gojo",
-        19: "Vegeta",
-        20: "Itachi",
-        21: "Waifu Drive",
-        22: "Todoroki Shoto",
-        23: "miles morales",
-        24: "mewtwo",
-        25: "goku sexy version",
-        26: "raiden from genshin",
-        27: "yuuko kanoe from dusk maiden ",
-        28: "dragon emperor",
-        29: "ai hoshino",
-        30: "giyu tomiyoka",
-        31: "FGT",
-        32: "ulkiorra",
-        33: "aizen sama",
-        34: "twin bll z",
-        35: "raiden another cut",
-        36: "hutao lolilove",
-        37: "boob lordess",
-        38: "starrk",
-        39: "hunter",
-        40: "kamadoe tanziro",
-        41: "xiayou",
-        42: "vasto lorde ichigo",
-        43: "ANti-spiral",
-        44: "Umiko Jabami",
-        45: "Ryukendo",
-        46: "Goku in nimbus",
-        47: "Sasuke  Naruto",
-        48: "Albedo",
-        49: "Honored one",
-        50: "uchihas",
-        51: "miku",
-        52: "miku 2",
-        53: "sexy waifu",
-        54: "automata sexy",
-        55: "Kanon",
-        56: "Messi Lionel",
-        57: "ronaldo 7",
-        58: "AJ styles",
-        59: "Muichiro demon slayer",
-        60: "Pikachu",
-        61: "Pikacamp",
-        62: "Kokushibow",
-        63: "Smexy anime waifu material",
-        64: "Rias gremory",
-        65: "marin kitagawa thigh",
-        66: "egirl sexy version",
-        67: "Killua",
-        68: "L",
-        69: "Boob Lordess 2",
-        70: "Makima",
-        71: "denji puccita chainsaw form",
-        72: "power with silicon boobs",
-        73: "og duo beyblade metal",
-        74: "Otwo cute AF",
-        75: "Nba"
-      
-    }
-
-
 # Constants
 TOKEN = os.environ.get('RUNNER')
 PREFIX = 'e!'
 PROFILES_FOLDER = 'Profiles'
 
+# Define your custom prefixes
+custom_prefixes = ["e.", "E.", "E!", "e!"]
 
-# Create a bot instance with a custom prefix
+# Function to check the custom prefix
 def custom_prefix(bot, message):
-  prefixes = ['e.','E.','E!', 'e!', f'<@{bot.user.id}> ', f'<@!{bot.user.id}> ']
-  return commands.when_mentioned_or(*prefixes)(bot, message)
-
+    content = message.content.strip()  # Remove leading and trailing spaces
+    for prefix in custom_prefixes:
+        if content.startswith(prefix):
+            return prefix
+    return commands.when_mentioned_or(*custom_prefixes)(bot, message)
 
 # Intents
 intents = discord.Intents.default()
@@ -205,20 +45,24 @@ intents.presences = False
 intents.message_content = True
 user_profiles = {}
 
+# Create a bot instance with custom prefix, intents, and case-insensitivity
+bot = commands.Bot(command_prefix=custom_prefix, intents=intents, case_insensitive=True, help_command=None)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
 
-# Create a bot instance
-bot = commands.Bot(command_prefix=custom_prefix,
-                   intents=intents,
-                   help_command=None)
+# Define a simple "hello" command
+@bot.command()
+async def hello(ctx):
+    await ctx.send("Hello, I am your flexible bot!")
+
 
 # Load registered user IDs from the accounts.txt file
 registered_users = set()
 with open('Assets/accounts.txt', 'r') as file:
-  registered_users = {int(line.strip()) for line in file if line.strip()}
+    registered_users = {int(line.strip()) for line in file if line.strip()}
 
 # Create a currency manager instance
 currency_manager = currency.CurrencyManager("Currency")
@@ -226,22 +70,18 @@ currency_manager = currency.CurrencyManager("Currency")
 # Define the path to the user profiles JSON file
 USER_PROFILES_JSON_PATH = os.path.join(PROFILES_FOLDER, 'user_profiles.json')
 
-
 # Function to save user profiles to the JSON file
 def save_user_profiles():
-  with open(USER_PROFILES_JSON_PATH, 'w') as json_file:
-    json.dump(user_profiles, json_file, indent=4)
-
+    with open(USER_PROFILES_JSON_PATH, 'w') as json_file:
+        json.dump(user_profiles, json_file, indent=4)
 
 # Load user profiles
 def load_user_profiles():
-  try:
-    with open(os.path.join(PROFILES_FOLDER, 'user_profiles.json'),
-              'r') as json_file:
-      return json.load(json_file)
-  except FileNotFoundError:
-    return {}
-
+    try:
+        with open(os.path.join(PROFILES_FOLDER, 'user_profiles.json'), 'r') as json_file:
+            return json.load(json_file)
+    except FileNotFoundError:
+        return {}
 
 # Initialize the RankFlow class here
 global rank_flow
@@ -254,135 +94,115 @@ async def on_ready():
     global user_profiles
     user_profiles = load_user_profiles()
     logger.info('User profiles loaded.')
-    
-    # # Send a custom starting message
-    # await bot.get_channel(1144142207281016853).send("Bot is now online!")
-
-
+  
 @bot.command()
-async def help(ctx):
-  await helper.send_help_message(ctx)
-
-
+async def help(ctx, page: int = 1):
+  await helper.send_help_message(ctx, page)
+  
 @bot.event
 async def on_message(message):
-  if message.author == bot.user:
-    return  # Ignore messages sent by the bot itself
+    if message.author == bot.user:
+        return  # Ignore messages sent by the bot itself
 
-  victory_keywords = ["won the battle!", "has fled the battle!"]
+    victory_keywords = ["won the battle!", "has fled the battle!"]
 
-  for keyword in victory_keywords:
-    if keyword in message.content:
-      mentions = message.mentions
-      if mentions:
-        winner = mentions[0]
-        duel_type = "battle" if "won" in keyword else "duel"
-        duel_link = message.jump_url
-        if duel_type == "duel":
-          outcome = f"Emerging from the nowhere notorious, {winner.mention} stands short!"
-        else:
-          outcome = f"Emerging from the {duel_type} victorious, {winner.mention} stands tall!"
+    for keyword in victory_keywords:
+        if keyword in message.content:
+            mentions = message.mentions
+            if mentions:
+                winner = mentions[0]
+                duel_type = "battle" if "won" in keyword else "duel"
+                duel_link = message.jump_url
+                if duel_type == "duel":
+                    outcome = f"Emerging from the nowhere notorious, {winner.mention} stands short!"
+                else:
+                    outcome = f"Emerging from the {duel_type} victorious, {winner.mention} stands tall!"
 
-        logging_channel_id = 1144143641678458981  # Replace with the actual logging channel ID
-        logging_channel = bot.get_channel(logging_channel_id)
+                logging_channel_id = 1144143641678458981  # Replace with the actual logging channel ID
+                logging_channel = bot.get_channel(logging_channel_id)
 
-        if logging_channel:
-          embed = discord.Embed(title="Duel Outcome",
-                                description=outcome,
-                                color=discord.Color.green())
-          embed.add_field(
-              name="Jump to Message",
-              value="**[Click here to go to the message]({})**".format(
-                  duel_link),
-              inline=False)
-          await logging_channel.send(embed=embed)
-      break
+                if logging_channel:
+                    embed = discord.Embed(title="Duel Outcome",
+                                          description=outcome,
+                                          color=discord.Color.green())
+                    embed.add_field(
+                        name="Jump to Message",
+                        value="**[Click here to go to the message]({})**".format(
+                            duel_link),
+                        inline=False)
+                    await logging_channel.send(embed=embed)
+            break
 
-  await bot.process_commands(message)
-
+    await bot.process_commands(message)
 
 # Command: Register
 @bot.command()
 async def register(ctx):
-  await registration.register_user(ctx, registered_users)
-
+    await registration.register_user(ctx, registered_users)
 
 # Update the is_registered check to send a registration message
 def is_registered():
-
-  async def predicate(ctx):
-    user_id = ctx.author.id
-    if user_id in registered_users:
-      return True
-    else:
-      await send_registration_message(ctx)
-      raise NotRegisteredError()
-
-  return commands.check(predicate)
-
+    async def predicate(ctx):
+        user_id = ctx.author.id
+        if user_id in registered_users:
+            return True
+        else:
+            await send_registration_message(ctx)
+            raise NotRegisteredError()
+    return commands.check(predicate)
 
 # Define a function to send the registration message
 async def send_registration_message(ctx):
-  await ctx.send(
-      "You need to register first. Use `!register` to register your account.")
-
+    await ctx.send("You need to register first. Use `!register` to register your account.")
 
 # Custom exception for not registered users
 class NotRegisteredError(commands.CheckFailure):
-  pass
-
+    pass
 
 @bot.command()
 @is_registered()
 async def startrankflow(ctx):
-  user_id = str(ctx.author.id)
+    user_id = str(ctx.author.id)
 
-  # Check if the user's rank already exists
-  if user_id in rank_flow.data:
-    await ctx.send(
-        "Your rank already exists. You can't start the rank flow again.")
-    return
+    # Check if the user's rank already exists
+    if user_id in rank_flow.data:
+        await ctx.send("Your rank already exists. You can't start the rank flow again.")
+        return
 
-  # Initialize the user's wins and losses to 0 using rank_flow
-  rank_flow.start_rank_flow(user_id)
+    # Initialize the user's wins and losses to 0 using rank_flow
+    rank_flow.start_rank_flow(user_id)
 
-  await ctx.send(
-      "Rank flow initialized for your account. Wins and losses set to 0.")
-
+    await ctx.send("Rank flow initialized for your account. Wins and losses set to 0.")
 
 @bot.command(name="stats")
 @is_registered()
 async def status(ctx):
-  # Check if rank_flow is initialized
-  if 'rank_flow' in globals():
-    # Check the rank_flow data for the user
-    user_id = str(ctx.author.id)
-    if user_id in rank_flow.data:
-      user_stats = rank_flow.data[user_id]
-      wins = user_stats.get("wins", 0)
-      losses = user_stats.get("losses", 0)
+    # Check if rank_flow is initialized
+    if 'rank_flow' in globals():
+        # Check the rank_flow data for the user
+        user_id = str(ctx.author.id)
+        if user_id in rank_flow.data:
+            user_stats = rank_flow.data[user_id]
+            wins = user_stats.get("wins", 0)
+            losses = user_stats.get("losses", 0)
 
-      # Get the user object (User, not Member)
-      user = ctx.author
-      avatar_url = user.avatar.url if user.avatar else user.default_avatar.url
+            # Get the user object (User, not Member)
+            user = ctx.author
+            avatar_url = user.avatar.url if user.avatar else user.default_avatar.url
 
-      # Create an embedded message
-      embed = discord.Embed(
-          title=f'{ctx.author.name}\'s Rank Status',
-          description=f'Wins: {wins}\nLosses: {losses}',
-          color=discord.Color.green()  # Customize the color
-      )
-      embed.set_thumbnail(
-          url=avatar_url)  # Set the user's avatar as the thumbnail
-      await ctx.send(embed=embed)
+            # Create an embedded message
+            embed = discord.Embed(
+                title=f'{ctx.author.name}\'s Rank Status',
+                description=f'Wins: {wins}\nLosses: {losses}',
+                color=discord.Color.green()  # Customize the color
+            )
+            embed.set_thumbnail(
+                url=avatar_url)  # Set the user's avatar as the thumbnail
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("You have not initialized your rank data yet. Use `!startrankflow` to begin.")
     else:
-      await ctx.send(
-          "You have not initialized your rank data yet. Use `!startrankflow` to begin."
-      )
-  else:
-    await ctx.send(
-        "The rank system is not initialized. Use `!startrankflow` to initialize it."
-    )
+        await ctx.send("The rank system is not initialized. Use `!startrankflow` to initialize it.")
 
 
 @bot.command(name="lb")
@@ -621,66 +441,70 @@ async def deleteprofile(ctx):
 
 
 @bot.command()
-@is_registered()
 async def render(ctx):
-  user_id = str(ctx.author.id)
+    user_id = str(ctx.author.id)
 
-  if user_id in user_profiles:
-    # Create and send a loading animation message
-    loading_msg = await ctx.send("Rendering profile... [.]")
+    if user_id in user_profiles:
+        # Create and send a loading animation message
+        loading_msg = await ctx.send("Rendering profile... [.]")
 
-    # Load the user's existing profile data
-    profile_data = user_profiles[user_id]
+        # Load the user's existing profile data
+        profile_data = user_profiles[user_id]
 
-    # Use locally changed values or default values
-    new_title = profile_data.get('title', 'Title Placeholder')
-    new_background_url = profile_data.get('background_url',
-                                          'Assets/Backgrounds/7.png')
-    new_rank = profile_data.get('rank', 'Noob')
+        # Use locally changed values or default values
+        new_title = profile_data.get('title', 'Title Placeholder')
+        new_background_url = profile_data.get('background_url', 'Assets/Backgrounds/7.png')
+        new_rank = profile_data.get('rank', 'Noob')
+        new_card_url = profile_data.get('card_url', None)  # Use "card_url" as the field name
 
-    # Update the profile data with the new values
-    profile_data['title'] = new_title
-    profile_data['background_url'] = new_background_url
-    profile_data['rank'] = new_rank
+        # Update the profile data with the new values
+        profile_data['title'] = new_title
+        profile_data['background_url'] = new_background_url
+        profile_data['rank'] = new_rank
+        profile_data['card_url'] = new_card_url  # Update the field name
 
-    # Save the updated user_profiles dictionary to the JSON file
-    json_path = os.path.join(PROFILES_FOLDER, 'user_profiles.json')
-    with open(json_path, 'w') as json_file:
-      json.dump(user_profiles, json_file, indent=4)
+        # Save the updated user_profiles dictionary to the JSON file
+        json_path = os.path.join(PROFILES_FOLDER, 'user_profiles.json')
+        with open(json_path, 'w') as json_file:
+            json.dump(user_profiles, json_file, indent=4)
 
-    # Load the profile image and apply the new background
-    avatar_url = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
-    username = ctx.author.name
-    profile_image = profile.create_profile_image(avatar_url, username,
-                                                 new_title, new_background_url)
-    image_path = profile_data['image_path']
-    profile_image.save(image_path)
+        # Load the profile image and apply the new background and card image
+        avatar_url = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
+        username = ctx.author.name
 
-    # Edit the loading message with the final result
-    await loading_msg.edit(content="Rendering profile... [✓]")
+        # Pass the new_card_url to the create_profile_image function
+        profile_image = profile.create_profile_image(avatar_url, username, new_title, new_rank, new_background_url, new_card_url)
 
-    # Delete the loading message with the final result
-    await loading_msg.delete()
+        image_path = profile_data['image_path']
+        profile_image.save(image_path)
 
-    embed = discord.Embed(
-        title="Profile Updated",
-        description="Your profile has been successfully updated!",
-        color=discord.Color.green())
-    await ctx.send(embed=embed)
-  else:
-    embed = discord.Embed(
-        title="Profile Not Found",
-        description=
-        "Your profile does not exist. Please create a profile using `generateprofile`.",
-        color=discord.Color.red())
-    await ctx.send(embed=embed)
+        # Edit the loading message with the final result
+        await loading_msg.edit(content="Rendering profile... [✓]")
 
+        # Delete the loading message with the final result
+        await loading_msg.delete()
 
-# Helper function to send user-friendly embeds
+        embed = discord.Embed(
+            title="Profile Updated",
+            description="Your profile has been successfully updated!",
+            color=discord.Color.green()
+        )
+        await ctx.send(embed=embed)
+    else:
+        embed = discord.Embed(
+            title="Profile Not Found",
+            description="Your profile does not exist. Please create a profile using `generateprofile`.",
+            color=discord.Color.red()
+        )
+        await ctx.send(embed=embed)
+
 async def send_embed(ctx, title, description, color):
-  embed = discord.Embed(title=title, description=description, color=color)
+  embed = discord.Embed(
+      title=title,
+      description=description,
+      color=color
+  )
   await ctx.send(embed=embed)
-
 
 # Event: Command Error
 @bot.event
@@ -689,12 +513,12 @@ async def on_command_error(ctx, error):
     if ctx.author.id in registered_users:
       await send_embed(
           ctx, "Command Not Found",
-          "Sorry, that command does not exist. Use `!help` to see available commands.",
+          "Sorry, that command does not exist. Use `help` to see available commands.",
           discord.Color.red())
     else:
       await send_embed(
           ctx, "What's this?",
-          "You need to register by using the **!register** command.",
+          "You need to register by using the **register** command.",
           discord.Color.red())
   else:
     logger.error(f'Error: {str(error)}', exc_info=True)
