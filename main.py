@@ -94,11 +94,11 @@ async def on_ready():
     global user_profiles
     user_profiles = load_user_profiles()
     logger.info('User profiles loaded.')
-  
+
 @bot.command()
 async def help(ctx, page: int = 1):
   await helper.send_help_message(ctx, page)
-  
+
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -791,11 +791,11 @@ title_prices = {
 @is_registered()
 async def title_shop(ctx):
     user_id = str(ctx.author.id)
-    
+
     # Load the currency data from the JSON file
     with open('Currency/currency.json', 'r') as currency_file:
         currency_data = json.load(currency_file)
-    
+
     # Create an embedded message to display the title shop
     embed = discord.Embed(
         title='Title Shop',
@@ -806,7 +806,7 @@ async def title_shop(ctx):
     # Determine the number of pages based on the number of titles
     num_titles = len(title_prices)
     num_pages = (num_titles + 4) // 5  # Ceiling division to calculate pages
-    
+
     # Initialize page and start index
     current_page = 1
     start_index = 0
@@ -817,7 +817,7 @@ async def title_shop(ctx):
             availability = "Available"
         else:
             availability = "Not Enough Redants"
-        
+
         embed.add_field(
             name=title,
             value=f'Price: {price} redants\nAvailability: {availability}',
@@ -826,57 +826,57 @@ async def title_shop(ctx):
 
     # Send the initial embed message
     message = await ctx.send(embed=embed)
-    
+
     # Define reactions for pagination
     reactions = ['⬅️', '➡️']
-    
+
     # Add reactions to the message
     for reaction in reactions:
         await message.add_reaction(reaction)
-    
+
     def check(reaction, user):
         return (
             user == ctx.author and
             reaction.message == message and
             str(reaction.emoji) in reactions
         )
-    
+
     while True:
         try:
             reaction, user = await bot.wait_for('reaction_add', check=check, timeout=60.0)
-            
+
             if str(reaction.emoji) == '⬅️':
                 # Go to the previous page
                 current_page -= 1
             elif str(reaction.emoji) == '➡️':
                 # Go to the next page
                 current_page += 1
-            
+
             # Ensure the page number is within bounds
             current_page = max(1, min(current_page, num_pages))
-            
+
             # Update the start index based on the current page
             start_index = (current_page - 1) * 5
-            
+
             # Clear the existing fields in the embed
             embed.clear_fields()
-            
+
             for title, price in list(title_prices.items())[start_index:start_index + 5]:
                 # Check if the user can afford the title
                 if currency_data.get(user_id, 0) >= price:
                     availability = "Available"
                 else:
                     availability = "Not Enough Redants"
-                
+
                 embed.add_field(
                     name=title,
                     value=f'Price: {price} redants\nAvailability: {availability}',
                     inline=True
                 )
-            
+
             # Update the message with the new embed
             await message.edit(embed=embed)
-        
+
         except asyncio.TimeoutError:
             break
 
@@ -1502,7 +1502,7 @@ async def hakai(ctx, user_id: int):
         rank_file = 'Assets/storage/rank.json'
         ban_file = 'Assets/ban.txt'
         accounts_file = 'Assets/accounts.txt'  # Add the path to accounts.txt
-        
+
         # Construct the path to the user's profile image file
         user_image_file = f'Profiles/{user_id}.png'
 
@@ -1510,16 +1510,16 @@ async def hakai(ctx, user_id: int):
             # Load user_profiles.json, currency.json, and rank.json
             with open(user_profiles_file, 'r') as user_profiles_data:
                 user_profiles = json.load(user_profiles_data)
-            
+
             with open(currency_file, 'r') as currency_data:
                 currency = json.load(currency_data)
-            
+
             with open(rank_file, 'r') as rank_data:
                 rank = json.load(rank_data)
         except FileNotFoundError:
             await ctx.send("One or more required files not found.")
             return
-        
+
         # Check if the user exists in user_profiles.json
         if str(user_id) in user_profiles:
             # Remove the user's data
@@ -1528,39 +1528,39 @@ async def hakai(ctx, user_id: int):
                 del currency[str(user_id)]
             if str(user_id) in rank:
                 del rank[str(user_id)]
-            
+
             # Append the user's ID to ban.txt if it's not already there
             with open(ban_file, 'r') as ban_data:
                 banned_users = ban_data.read().splitlines()
-            
+
             if str(user_id) not in banned_users:
                 with open(ban_file, 'a') as ban_data:
                     ban_data.write(str(user_id) + '\n')
-            
+
             # Remove the user's ID from accounts.txt
             with open(accounts_file, 'r') as accounts_data:
                 accounts = accounts_data.read().splitlines()
-            
+
             if str(user_id) in accounts:
                 accounts.remove(str(user_id))
-            
+
             with open(accounts_file, 'w') as accounts_data:
                 accounts_data.write('\n'.join(accounts))
-            
+
             # Delete the user's profile image file if it exists
             if os.path.exists(user_image_file):
                 os.remove(user_image_file)
-            
+
             # Save the modified data back to the files
             with open(user_profiles_file, 'w') as user_profiles_data:
                 json.dump(user_profiles, user_profiles_data, indent=4)
-            
+
             with open(currency_file, 'w') as currency_data:
                 json.dump(currency, currency_data, indent=4)
-            
+
             with open(rank_file, 'w') as rank_data:
                 json.dump(rank, rank_data, indent=4)
-            
+
             await ctx.send(f"User with ID {user_id} has been 'hakai'd.")
         else:
             await ctx.send("User not found in user profiles.")
@@ -1572,7 +1572,7 @@ async def hakai(ctx, user_id: int):
 async def refresh(ctx):
     if ctx.author.id == kms:
         await ctx.send("** Bot went for quick relization **")
-        
+
         # Gracefully exit the bot process to trigger Replit's automatic restart
         os._exit(0)
 
