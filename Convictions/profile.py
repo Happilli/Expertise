@@ -10,72 +10,102 @@ import json
 
 
 
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+import discord
+import requests
+from io import BytesIO
+import json
+
 PROFILES_FOLDER = 'Profiles'
 BACKGROUND_FOLDER = 'Assets/Backgrounds/'
 
 def create_profile_image(avatar_url, username, title, rank, default_background_path=None, default_card_image_path=None):
-  profile_image = Image.new('RGBA', (1440, 920), (255, 255, 255, 255))
+    profile_image = Image.new('RGBA', (1440, 920), (255, 255, 255, 255))
 
-  if default_background_path:
-      background = Image.open(default_background_path)
-      separator_y = int(profile_image.height * 0.6)  # 60% from the top
+    if default_background_path:
+        background = Image.open(default_background_path)
+        separator_y = int(profile_image.height * 0.6)  # 60% from the top
 
-      # Ensure the background covers the top half without resizing
-      if background.size != (profile_image.width, separator_y):
-          background = background.resize((profile_image.width, separator_y))
+        # Ensure the background covers the top half without resizing
+        if background.size != (profile_image.width, separator_y):
+            background = background.resize((profile_image.width, separator_y))
 
-      profile_image.paste(background, (0, 0))
+        profile_image.paste(background, (0, 0))
 
-      bottom_half = Image.new('RGBA', (profile_image.width, profile_image.height - separator_y), (65, 65, 58, 255))
+        bottom_half = Image.new('RGBA', (profile_image.width, profile_image.height - separator_y), (65, 65, 58, 255))
+        profile_image.paste(bottom_half, (0, separator_y))
 
-      profile_image.paste(bottom_half, (0, separator_y))
+    response = requests.get(avatar_url)
+    if response.status_code == 200:
+        avatar = Image.open(BytesIO(response.content))
+        avatar_size = (300, 300)
+        avatar_x = 20
+        avatar_y = separator_y - avatar_size[1] // 2
+        mask = Image.new('L', avatar_size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, avatar_size[0], avatar_size[1]), fill=255)
+        avatar = avatar.resize(avatar_size, Image.NEAREST)
+        avatar.putalpha(mask)
 
-  response = requests.get(avatar_url)
-  if response.status_code == 200:
-      avatar = Image.open(BytesIO(response.content))
-      avatar_size = (300, 300)
-      avatar_x = 20
-      avatar_y = separator_y - avatar_size[1] // 2
-      mask = Image.new('L', avatar_size, 0)
-      draw = ImageDraw.Draw(mask)
-      draw.ellipse((0, 0, avatar_size[0], avatar_size[1]), fill=255)
-      avatar = avatar.resize(avatar_size, Image.NEAREST)
-      avatar.putalpha(mask)
-      profile_image.paste(avatar, (avatar_x, avatar_y), avatar)
+        # Create a circular black border around the avatar
+        border_thickness = 12  # Adjust the thickness as needed
+        border_size = (avatar_size[0] + border_thickness * 2, avatar_size[1] + border_thickness * 2)
+        border_mask = Image.new('L', border_size, 0)
+        border_draw = ImageDraw.Draw(border_mask)
+        border_draw.ellipse((0, 0, border_size[0], border_size[1]), fill=255)
+        avatar_with_border = Image.new('RGBA', border_size, (0, 0, 0, 0))
+        avatar_with_border.paste(avatar, (border_thickness, border_thickness), avatar)
+        avatar_with_border.putalpha(border_mask)
 
-  # Load the card image if provided
-  if default_card_image_path:
-      card_image = Image.open(default_card_image_path)
-      card_image = card_image.convert("RGBA")
-      card_image = card_image.resize((360, 690), Image.NEAREST)
-      card_image = card_image.rotate(10, expand=True)
-      card_x = 900
-      card_y = separator_y - int(card_image.height * 0.60)
+        profile_image.paste(avatar_with_border, (avatar_x - border_thickness, avatar_y - border_thickness), avatar_with_border)
 
-      profile_image.paste(card_image, (card_x, card_y), card_image)
 
-  font_path = os.path.join('Fonts', 'Poppins.ttf')
+    # Load the card image if provided
+    if default_card_image_path:
+        card_image = Image.open(default_card_image_path)
+        card_image = card_image.convert("RGBA")
+        card_image = card_image.resize((390, 690), Image.NEAREST)
 
-  username_font = ImageFont.truetype(font_path, 56)
-  title_font = ImageFont.truetype(font_path, 42)
-  rank_font = ImageFont.truetype(font_path, 36)
+        # Create a new image for the framed card with a slightly visible black frame
+        frame_thickness = 10  # Adjust this value to control the thickness of the frame
+        frame_size = (card_image.width + frame_thickness * 2, card_image.height + frame_thickness * 2)
+        framed_card = Image.new("RGBA", frame_size, (0, 0, 0, 255))
 
-  draw = ImageDraw.Draw(profile_image)
-  text_color = (255, 255, 255)
-  outline_color = (0, 0, 0)
+        # Rotate both the card and the frame to -10 degrees
+        card_image = card_image.rotate(-10, expand=True)
+        framed_card = framed_card.rotate(-10, expand=True)
 
-  username_x = avatar_x + avatar_size[0] + 20  # Adjust the X coordinate for the username
-  username_y = avatar_y + 135 # Adjust the Y coordinate for the username
-  title_x = username_x  # Keep the title in line with the username
-  title_y = username_y + 60  # Adjust the Y coordinate for the title
-  rank_x = username_x  # Keep the rank in line with the username
-  rank_y = title_y + 45  # Adjust the Y coordinate for the rank
+        # Paste the card onto the framed card, with an offset to center it within the frame
+        framed_card.paste(card_image, (frame_thickness, frame_thickness), card_image)
 
-  draw.text((username_x, username_y), username, fill=text_color, font=username_font)
-  draw.text((title_x, title_y), title, fill=text_color, font=title_font)
-  draw.text((rank_x, rank_y), rank, fill=text_color, font=rank_font)
+        # Set the position for the framed card
+        card_x = 900
+        card_y = separator_y - int(framed_card.height * 0.60)
 
-  return profile_image
+        # Paste the framed card onto the profile image
+        profile_image.paste(framed_card, (card_x, card_y), framed_card)
+
+    font_path = os.path.join('Fonts', 'Poppins.ttf')
+    username_font = ImageFont.truetype(font_path, 56)
+    title_font = ImageFont.truetype(font_path, 42)
+    rank_font = ImageFont.truetype(font_path, 36)
+
+    draw = ImageDraw.Draw(profile_image)
+    text_color = (255, 255, 255)
+    outline_color = (0, 0, 0)
+
+    username_x = avatar_x + avatar_size[0] + 20
+    username_y = avatar_y + 135
+    title_x = username_x
+    title_y = username_y + 60
+    rank_x = username_x
+    rank_y = title_y + 45
+
+    draw.text((username_x, username_y), username, fill=text_color, font=username_font)
+    draw.text((title_x, title_y), title, fill=text_color, font=title_font)
+    draw.text((rank_x, rank_y), rank, fill=text_color, font=rank_font)
+
+    return profile_image
 
 
 
