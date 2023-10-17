@@ -763,11 +763,26 @@ card_folder = './Assets/Cards/'  # Update with your actual path
 
 # Define card information with descriptions and prices
 card_info = {
-    "1.jpg": {"name": "Sasuke", "description": "Akatsuki version", "price": 5100},
-    "2.jpg": {"name": "Goku", "description": "version Ultra instinct !", "price": 15000},
-    "3.jpg": {"name": "Gojo", "description": "Gojo the free version", "price": 20000},
+  "1.jpg": {"name": "Sasuke", "description": "Akatsuki version", "price": 5100},
+  "2.jpg": {"name": "Goku", "description": "version Ultra instinct !", "price": 15000},
+  "3.jpg": {"name": "Gojo", "description": "Gojo the free version", "price": 20000},
+  "4.jpg": {"name": "senku", "description": "dr. stone scienctist prehstoric ", "price": 5000},
+  "5.jpg": {"name": "nagi", "description": "blue lock : lazy genius", "price": 5900},
+  "6.jpg": {"name": "bachira", "description": "Blue lock: monster inside me ", "price": 10000},
+  "7.jpg": {"name": "kaguya", "description": "shinomiya kaguya the sexy ", "price": 9000},
+  "8.jpg": {"name": "Esdeath", "description": "the fallen angel: ice princess ", "price": 14000},
+  "9.jpg": {"name": "byakyuya", "description": "senbon zakura kageyoshi", "price": 12000},
+  "10.jpg": {"name": "killua", "description": "fast AF", "price": 4000},
+  "11.jpg": {"name": "Sukuna", "description": "greatest curse spirit", "price": 18000},
+  "12.jpg": {"name": "Saitama", "description": "Can solo your fav anime-verse", "price": 25000}
     # Add more cards as needed
 }
+
+import discord
+from discord.ext import commands
+
+# Constants
+CARDS_PER_PAGE = 4
 
 @bot.command(name='cardshop')
 @is_registered()
@@ -778,12 +793,8 @@ async def card_shop(ctx):
     with open('Currency/currency.json', 'r') as currency_file:
         currency_data = json.load(currency_file)
 
-    # Create an embedded message to display the card shop
-    embed = discord.Embed(
-        title='Card Shop',
-        description='To buy a card, use **e!buycard [name]**. Here are the available cards:',
-        color=discord.Color.blue()  # Customize the color
-    )
+    # List of available cards
+    available_cards = []
 
     for card_name, card_data in card_info.items():
         name = card_data.get("name", "Unnamed Card")
@@ -795,14 +806,74 @@ async def card_shop(ctx):
         else:
             availability = "Not Enough Redants"
 
-        embed.add_field(
-            name=name,
-            value=f'Description: {description}\nPrice: {price} redants\nAvailability: {availability}',
-            inline=True
+        available_cards.append((name, description, price, availability))
+
+    # Calculate the total number of pages
+    total_pages = (len(available_cards) + CARDS_PER_PAGE - 1) // CARDS_PER_PAGE
+
+    # Initialize page index
+    page_index = 0
+
+    message = None
+
+    # Add reaction controls
+    async def add_reactions():
+        await message.add_reaction("⬅️")
+        await message.add_reaction("➡️")
+
+    # Function to update the message with the current page
+    async def update_page():
+        nonlocal page_index, message  # Declare message as nonlocal
+        embed = discord.Embed(
+            title=f'Card Shop - Page {page_index + 1}/{total_pages}',
+            description='To buy a card, use **e!buycard [name]**. Here are the available cards:',
+            color=discord.Color.blue()
         )
 
-    # Send the embedded message
-    await ctx.send(embed=embed)
+        start_idx = page_index * CARDS_PER_PAGE
+        end_idx = (page_index + 1) * CARDS_PER_PAGE
+
+        for card_data in available_cards[start_idx:end_idx]:
+            name, description, price, availability = card_data
+            embed.add_field(
+                name=name,
+                value=f'Description: {description}\nPrice: {price} redants\nAvailability: {availability}',
+                inline=True
+            )
+
+        # Send the embedded message
+        if message:
+            await message.edit(embed=embed)
+        else:
+            message = await ctx.send(embed=embed)
+            await add_reactions()
+
+    # Initial page display
+    await update_page()
+
+    def check(reaction, user):
+        return user == ctx.author and reaction.message == message
+
+    while True:
+        try:
+            reaction, user = await bot.wait_for('reaction_add', check=check, timeout=60.0)
+        except asyncio.TimeoutError:
+            break
+
+        if str(reaction.emoji) == '⬅️':
+            # Move to the previous page
+            page_index = (page_index - 1) % total_pages
+            await update_page()
+        elif str(reaction.emoji) == '➡️':
+            # Move to the next page
+            page_index = (page_index + 1) % total_pages
+            await update_page()
+
+        # Remove the user's reaction
+        await message.remove_reaction(reaction, user)
+
+    # Remove reactions when done
+    await message.clear_reactions()
 
 
 
