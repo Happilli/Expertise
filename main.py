@@ -774,12 +774,31 @@ card_info = {
   "9.jpg": {"name": "byakyuya", "description": "senbon zakura kageyoshi", "price": 12000},
   "10.jpg": {"name": "killua", "description": "fast AF", "price": 4000},
   "11.jpg": {"name": "Sukuna", "description": "greatest curse spirit", "price": 18000},
-  "12.jpg": {"name": "Saitama", "description": "Can solo your fav anime-verse", "price": 25000}
-    # Add more cards as needed
+  "12.jpg": {"name": "Saitama", "description": "Can solo your fav anime-verse", "price": 25000},
+  "13.jpg": {"name": "nami", "description": "weather babe", "price": 11000},
+  "14.jpg": {"name": "ace", "description": "fire fist asce", "price": 4900},
+  "15.jpg": {"name": "zoro", "description": "king of the hell", "price": 17000},
+  "16.jpg": {"name": "luffy", "description": "future king of the pirates !", "price": 21000},
+  "17.jpg": {"name": "sakamoto", "description": "have u heard of me?", "price": 15000},
+  "18.jpg": {"name": "killua2", "description": "fast AF boiee", "price": 14000},
+  "19.jpg": {"name": "usopp", "description": "greastest god of al time, d god, shogei king", "price": 18000},
+  "20.jpg": {"name": "kurapika", "description": "literally , takne a coffin for the enemy ", "price": 25000},
+  "21.jpg": {"name": "giyu", "description": "shinobu's babe fr.", "price": 12000},
+  "22.jpg": {"name": "l", "description": "hmm, the best genus ever has high iq AF", "price": 13000},
+  "23.jpg": {"name": "shanks", "description": "has the best emperor haki ever !", "price": 18000},
+  "24.jpg": {"name": "gon", "description": "his daddy left him, xd", "price": 21000},
+  "25.jpg": {"name": "light", "description": "kira aka kami sama xD", "price": 12000},
+  "26.jpg": {"name": "rin", "description": "da' wablu guy ", "price": 24000},
+  "27.jpg": {"name": "sanji", "description": "ladies rikkybell aka chef ", "price": 19000},
+  "28.jpg": {"name": "franky", "description": "robotic pirate ", "price": 9000},
+  "29.jpg": {"name": "chopper", "description": "big mom babe", "price": 7500},
+  "30.jpg": {"name": "brook", "description": "panty lorde ", "price": 7000},
+  "31.jpg": {"name": "robin", "description": "babe material  ", "price": 6500},
+  "32.jpg": {"name": "law", "description": "water law trafalgar d. shambles ", "price": 1800}
+
 }
 
-import discord
-from discord.ext import commands
+
 
 # Constants
 CARDS_PER_PAGE = 4
