@@ -2,9 +2,17 @@
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/10.jpg",
+        "background_url": "./Assets/Backgrounds/18.jpg",
         "rank": "Wooden",
-        "card_url": "./Assets/Cards/13.jpg",
-        "background_description": "GTR"
+        "card_url": "./Assets/Cards/2.jpg",
+        "background_description": "Satoru Gojo final moments "
+    },
+    "1096342703870050364": {
+        "image_path": "Profiles/1096342703870050364.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/27.jpg",
+        "rank": "Noob",
+        "card_url": "./Assets/Cards/1.jpg",
+        "background_description": "dragon Emperor"
     }
 }
