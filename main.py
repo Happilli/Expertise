@@ -794,10 +794,13 @@ card_info = {
   "29.jpg": {"name": "chopper", "description": "big mom babe", "price": 7500},
   "30.jpg": {"name": "brook", "description": "panty lorde ", "price": 7000},
   "31.jpg": {"name": "robin", "description": "babe material  ", "price": 6500},
-  "32.jpg": {"name": "law", "description": "water law trafalgar d. shambles ", "price": 1800}
+  "32.jpg": {"name": "law", "description": "water law trafalgar d. shambles ", "price": 18000},
+  "33.jpg": {"name": "mori", "description": "bulies DBZ ? ", "price": 17000},
+  "34.jpg": {"name": "mikey", "description": "KIck lee  ", "price": 2500},
+  "35.jpg": {"name": "ichigo", "description": "shinigami, quincy, fullbringer maybe future soul king  ", "price": 17500},
+  "36.jpg": {"name": "itachi", "description": "ur already in my genjutsu...  ", "price": 17500}
 
 }
-
 
 
 # Constants
