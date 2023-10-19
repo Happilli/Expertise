@@ -59,12 +59,12 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
   new_height = int(200 * 0.8)  # Reduce the height by 20%
   new_width = int(dragon_shadow.width * (new_height / dragon_shadow.height))
   dragon_shadow = dragon_shadow.resize((new_width, new_height))
- 
-
-  
 
 
-  
+
+
+
+
   # Shift the dragon shadow image slightly to the right
   dragon_shadow_x = avatar_x + int(avatar_size[0] * 0.20)  # Adjusted for a small right shift
 
@@ -106,23 +106,23 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
   title_y = username_y + 60
   rank_x = username_x  # Same x-coordinate for rank
   rank_y = title_y + 45
-  
+
   # Styling for Username
   username_x = avatar_x + avatar_size[0] + 30
   username_y = avatar_y + 135
-  username_font_color = (255, 255, 255)
+  username_font_color = (255, 150, 0)
   username_outline_color = (0, 0, 0)
 
   # Styling for Title
   title_x = username_x
   title_y = username_y + 60
-  title_font_color = (255, 150, 0)  # Orange text color
+  title_font_color =  (255, 255, 255)
   title_outline_color = (0, 0, 0)
 
   # Styling for Rank
   rank_x = username_x
   rank_y = title_y + 45
-  rank_font_color = (0, 255, 0)  # Green text color
+  rank_font_color = (0, 255, 0) 
   rank_outline_color = (0, 0, 0)
 
   draw.text((username_x, username_y), username, fill=username_font_color, font=username_font, stroke_width=2, outline=username_outline_color)
@@ -140,6 +140,8 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
   draw.text((datetime_x, datetime_y), current_datetime, fill=text_color, font=datetime_font)
 
   return profile_image
+
+
 
 
 
