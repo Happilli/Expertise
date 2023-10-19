@@ -55,8 +55,19 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
 
   dragon_shadow_path = 'Assets/dragon_shadow.png'
   dragon_shadow = Image.open(dragon_shadow_path)
-  dragon_shadow = dragon_shadow.resize((avatar_size[0], 200))
-  dragon_shadow_x = avatar_x
+  # Make the dragon shadow image smaller
+  new_height = int(200 * 0.8)  # Reduce the height by 20%
+  new_width = int(dragon_shadow.width * (new_height / dragon_shadow.height))
+  dragon_shadow = dragon_shadow.resize((new_width, new_height))
+ 
+
+  
+
+
+  
+  # Shift the dragon shadow image slightly to the right
+  dragon_shadow_x = avatar_x + int(avatar_size[0] * 0.20)  # Adjusted for a small right shift
+
   dragon_shadow_y = avatar_y + avatar_size[1] + 10
   profile_image.paste(dragon_shadow, (dragon_shadow_x, dragon_shadow_y), dragon_shadow)
 
@@ -89,12 +100,34 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
   text_color = (255, 255, 255)
   outline_color = (0, 0, 0)
 
-  username_x = avatar_x + avatar_size[0] + 20
+  username_x = avatar_x + avatar_size[0] + 30  # Adjusted for spacing
   username_y = avatar_y + 135
+  title_x = username_x  # Same x-coordinate for title
+  title_y = username_y + 60
+  rank_x = username_x  # Same x-coordinate for rank
+  rank_y = title_y + 45
+  
+  # Styling for Username
+  username_x = avatar_x + avatar_size[0] + 30
+  username_y = avatar_y + 135
+  username_font_color = (255, 255, 255)
+  username_outline_color = (0, 0, 0)
+
+  # Styling for Title
   title_x = username_x
   title_y = username_y + 60
+  title_font_color = (255, 150, 0)  # Orange text color
+  title_outline_color = (0, 0, 0)
+
+  # Styling for Rank
   rank_x = username_x
   rank_y = title_y + 45
+  rank_font_color = (0, 255, 0)  # Green text color
+  rank_outline_color = (0, 0, 0)
+
+  draw.text((username_x, username_y), username, fill=username_font_color, font=username_font, stroke_width=2, outline=username_outline_color)
+  draw.text((title_x, title_y), title, fill=title_font_color, font=title_font, stroke_width=2, outline=title_outline_color)
+  draw.text((rank_x, rank_y), rank, fill=rank_font_color, font=rank_font, stroke_width=2, outline=rank_outline_color)
 
   draw.text((username_x, username_y), username, fill=text_color, font=username_font)
   draw.text((title_x, title_y), title, fill=text_color, font=title_font)

@@ -1,18 +1,1 @@
-{
-    "team1": {
-        "name": "hello",
-        "users": [
-            "<@1128651413535346708>"
-        ],
-        "goals": "69",
-        "current_status": 1
-    },
-    "team2": {
-        "name": "world",
-        "users": [
-            "<@780294051090006016>"
-        ],
-        "goals": "69",
-        "current_status": 0
-    }
-}
+{}
