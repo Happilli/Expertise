@@ -1,12 +1,4 @@
 {
-    "1128651413535346708": {
-        "image_path": "Profiles/1128651413535346708.png",
-        "title": "Legendary",
-        "background_url": "./Assets/Backgrounds/2.jpg",
-        "rank": "Stone",
-        "card_url": "./Assets/Cards/26.jpg",
-        "background_description": "MUI Goku"
-    },
     "1096342703870050364": {
         "image_path": "Profiles/1096342703870050364.png",
         "title": "Title Placeholder",
@@ -52,5 +44,13 @@
         "background_url": "./Assets/Backgrounds/11.png",
         "rank": "Nobda",
         "card_url": "./Assets/Cards/1.jpg"
+    },
+    "1128651413535346708": {
+        "image_path": "Profiles/1128651413535346708.png",
+        "title": "Boob Lover",
+        "background_url": "./Assets/Backgrounds/37.jpg",
+        "rank": "Stone",
+        "card_url": "./Assets/Cards/26.jpg",
+        "background_description": "rias babe  gremory"
     }
 }
