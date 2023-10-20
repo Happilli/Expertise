@@ -1,12 +1,4 @@
 {
-    "1096342703870050364": {
-        "image_path": "Profiles/1096342703870050364.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/33.jpg",
-        "rank": "Nobda",
-        "card_url": "./Assets/Cards/14.jpg",
-        "background_description": "makima: control devil"
-    },
     "780294051090006016": {
         "image_path": "Profiles/780294051090006016.png",
         "title": "Title Placeholder",
@@ -45,12 +37,19 @@
         "rank": "Nobda",
         "card_url": "./Assets/Cards/1.jpg"
     },
+    "1096342703870050364": {
+        "image_path": "Profiles/1096342703870050364.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/41.jpg",
+        "rank": "Noob",
+        "card_url": "./Assets/Cards/26.jpg",
+        "background_description": "Minecreaft"
+    },
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
-        "title": "Mythical",
-        "background_url": "./Assets/Backgrounds/28.jpg",
-        "rank": "Stone",
-        "card_url": "./Assets/Cards/14.jpg",
-        "background_description": "Erza Scarlett"
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/11.png",
+        "rank": "Noob",
+        "card_url": "./Assets/Cards/1.jpg"
     }
 }

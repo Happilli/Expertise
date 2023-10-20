@@ -434,11 +434,34 @@ async def viewprofile(ctx, user_mention: discord.Member = None):
         await ctx.send(f"An error occurred: {str(e)}")
 
 
-# Command: Delete Profile
 @bot.command()
 @is_registered()
 async def deleteprofile(ctx):
-  await profile.delete_profile(ctx, user_profiles)
+    # Ask for confirmation
+    confirmation_message = await ctx.send("Are you sure you want to delete your profile? React with ✅ to confirm or ❌ to cancel.")
+
+    # Add reaction emojis to the message
+    await confirmation_message.add_reaction("✅")  # Check mark
+    await confirmation_message.add_reaction("❌")  # Cross mark
+
+    def check(reaction, user):
+        return user == ctx.author and str(reaction.emoji) in ["✅", "❌"]
+
+    try:
+        reaction, _ = await bot.wait_for('reaction_add', check=check, timeout=30)
+    except asyncio.TimeoutError:
+        await ctx.send("You didn't confirm in time. Deletion canceled.")
+        return
+
+    if str(reaction.emoji) == "✅":
+        # Perform the profile deletion here
+        await profile.delete_profile(ctx, user_profiles)
+    else:
+        await ctx.send("Deletion canceled.")
+
+    # Delete the confirmation message
+    await confirmation_message.delete()
+
 
 
 @bot.command()
