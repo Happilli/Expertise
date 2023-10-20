@@ -140,7 +140,7 @@ background_descriptions = {
     55: "Groudon",
     56: "LOKI",
     57: "peaky blinders",
-    58: "AJ styles",
+    58: "Evergarden :>",
     59: "Muichiro demon slayer",
     60: "Pikachu",
     61: "Pikacamp",

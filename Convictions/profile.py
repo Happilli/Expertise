@@ -21,7 +21,7 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
 
         profile_image.paste(background, (0, 0))
 
-        bottom_half = Image.new('RGBA', (profile_image.width, profile_image.height - separator_y), (65, 65, 58, 255))
+        bottom_half = Image.new('RGBA', (profile_image.width, profile_image.height - separator_y), (0, 0, 0, 255))
         profile_image.paste(bottom_half, (0, separator_y))
 
     response = requests.get(avatar_url)
@@ -112,7 +112,8 @@ def create_profile_image(avatar_url, username, title, rank, default_background_p
     draw.text((title_x, title_y), title, fill=text_color, font=title_font)
     draw.text((rank_x, rank_y), rank, fill=text_color, font=rank_font)
 
-    current_datetime = datetime.datetime.now().strftime('joined %Y/%m/%d')
+    datetime_font = ImageFont.truetype(font_path, 27)
+    current_datetime = datetime.datetime.now().strftime('Joined %Y/%m/%d')
     datetime_x = 1440 - 120 - len(current_datetime) * 12
     datetime_y = 920 - 60
 
