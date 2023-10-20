@@ -1,11 +1,11 @@
 {
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
-        "title": "Mythical",
-        "background_url": "./Assets/Backgrounds/28.jpg",
+        "title": "Legendary",
+        "background_url": "./Assets/Backgrounds/2.jpg",
         "rank": "Stone",
-        "card_url": "./Assets/Cards/14.jpg",
-        "background_description": "Erza Scarlett"
+        "card_url": "./Assets/Cards/26.jpg",
+        "background_description": "MUI Goku"
     },
     "1096342703870050364": {
         "image_path": "Profiles/1096342703870050364.png",
@@ -29,5 +29,28 @@
         "rank": "Nobda",
         "card_url": "./Assets/Cards/26.jpg",
         "background_description": "genshin duo sexy"
+    },
+    "1145682914483392624": {
+        "image_path": "Profiles/1145682914483392624.png",
+        "title": "Conqueror",
+        "background_url": "./Assets/Backgrounds/23.jpg",
+        "rank": "Nobda",
+        "card_url": "./Assets/Cards/5.jpg",
+        "background_description": "seishiro Nagi"
+    },
+    "924305166692397058": {
+        "image_path": "Profiles/924305166692397058.png",
+        "title": "Legendary",
+        "background_url": "./Assets/Backgrounds/17.jpg",
+        "rank": "Wooden",
+        "card_url": "./Assets/Cards/3.jpg",
+        "background_description": "Solo leveling"
+    },
+    "1015821583870337066": {
+        "image_path": "Profiles/1015821583870337066.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/11.png",
+        "rank": "Nobda",
+        "card_url": "./Assets/Cards/1.jpg"
     }
 }

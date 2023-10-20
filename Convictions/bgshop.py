@@ -119,7 +119,7 @@ background_descriptions = {
     34: "ryuk: death note ",
     35: "dio brando ",
     36: "dio x kujo",
-    37: "boob lordess",
+    37: "rias babe  gremory",
     38: "starrk",
     39: "hunter",
     40: "kamadoe tanziro",
