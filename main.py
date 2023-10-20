@@ -798,7 +798,8 @@ card_info = {
   "33.jpg": {"name": "mori", "description": "bulies DBZ ? ", "price": 17000},
   "34.jpg": {"name": "mikey", "description": "KIck lee  ", "price": 2500},
   "35.jpg": {"name": "ichigo", "description": "shinigami, quincy, fullbringer maybe future soul king  ", "price": 17500},
-  "36.jpg": {"name": "itachi", "description": "ur already in my genjutsu...  ", "price": 17500}
+  "36.jpg": {"name": "itachi", "description": "ur already in my genjutsu...  ", "price": 17500},
+  "37.jpg": {"name": "samrick", "description": "DEv photo.. ", "price": 175000}
 
 }
 
