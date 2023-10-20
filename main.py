@@ -442,55 +442,52 @@ async def deleteprofile(ctx):
 
 
 @bot.command()
+@is_registered()
 async def render(ctx):
     user_id = str(ctx.author.id)
 
     if user_id in user_profiles:
-        # Create and send a loading animation message
         loading_msg = await ctx.send("Rendering profile... [.]")
 
-        # Load the user's existing profile data
         profile_data = user_profiles[user_id]
 
-        # Use locally changed values or default values
         new_title = profile_data.get('title', 'Title Placeholder')
         new_background_url = profile_data.get('background_url', 'Assets/Backgrounds/7.png')
         new_rank = profile_data.get('rank', 'Noob')
-        new_card_url = profile_data.get('card_url', None)  # Use "card_url" as the field name
+        new_card_url = profile_data.get('card_url', None)
 
-        # Update the profile data with the new values
         profile_data['title'] = new_title
         profile_data['background_url'] = new_background_url
         profile_data['rank'] = new_rank
-        profile_data['card_url'] = new_card_url  # Update the field name
+        profile_data['card_url'] = new_card_url
 
-        # Save the updated user_profiles dictionary to the JSON file
         json_path = os.path.join(PROFILES_FOLDER, 'user_profiles.json')
         with open(json_path, 'w') as json_file:
             json.dump(user_profiles, json_file, indent=4)
 
-        # Load the profile image and apply the new background and card image
         avatar_url = ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url
         username = ctx.author.name
 
-        # Pass the new_card_url to the create_profile_image function
         profile_image = profile.create_profile_image(avatar_url, username, new_title, new_rank, new_background_url, new_card_url)
 
         image_path = profile_data['image_path']
         profile_image.save(image_path)
 
-        # Edit the loading message with the final result
         await loading_msg.edit(content="Rendering profile... [✓]")
-
-        # Delete the loading message with the final result
         await loading_msg.delete()
 
-        embed = discord.Embed(
-            title="Profile Updated",
-            description="Your profile has been successfully updated!",
+        profile_embed = discord.Embed(
+            title="Your Profile",
+            description="Here is your updated profile:",
             color=discord.Color.green()
         )
-        await ctx.send(embed=embed)
+        profile_embed.set_thumbnail(url=ctx.author.avatar.url)
+        profile_embed.add_field(name="Title", value=new_title, inline=False)
+        profile_embed.add_field(name="Rank", value=new_rank, inline=False)
+        profile_embed.set_image(url=f"attachment://{image_path.split('/')[-1]}")
+
+        await ctx.send(embed=profile_embed, file=discord.File(image_path))
+
     else:
         embed = discord.Embed(
             title="Profile Not Found",
@@ -498,6 +495,7 @@ async def render(ctx):
             color=discord.Color.red()
         )
         await ctx.send(embed=embed)
+
 
 async def send_embed(ctx, title, description, color):
   embed = discord.Embed(
@@ -935,7 +933,7 @@ async def view_card(ctx, *, card_name: str):
         embed = discord.Embed(
             title=f'Viewing Card: {name}',
             description=f'Description: {description}\nPrice: {price} redants\nAvailability: {availability}\n\n',
-                        
+
             color=discord.Color.blue()  # Customize the color
         )
 
