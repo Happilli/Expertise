@@ -39,17 +39,18 @@
     },
     "1096342703870050364": {
         "image_path": "Profiles/1096342703870050364.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/41.jpg",
-        "rank": "Noob",
+        "title": "Supreme",
+        "background_url": "./Assets/Backgrounds/63.jpg",
+        "rank": "Nobda",
         "card_url": "./Assets/Cards/26.jpg",
-        "background_description": "Minecreaft"
+        "background_description": "Groot "
     },
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Noob",
-        "card_url": "./Assets/Cards/1.jpg"
+        "title": "Supreme",
+        "background_url": "./Assets/Backgrounds/71.jpg",
+        "rank": "Stone",
+        "card_url": "./Assets/Cards/26.jpg",
+        "background_description": "war devil"
     }
 }
