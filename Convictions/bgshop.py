@@ -154,10 +154,10 @@ background_descriptions = {
     69: "sun ZIN woo",
     70: "Jirachi",
     71: "war devil",
-    72: "power with silicon boobs",
-    73: "og duo beyblade metal",
-    74: "Otwo cute AF",
-    75: "Nba"
+    72: "power: blood devil",
+    73: "violet : EVERGARDEN",
+    74: "kazutora: tokyo revnegers ",
+    75: "Gundam"
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):
