@@ -9,10 +9,10 @@
     "1148915776124878848": {
         "image_path": "Profiles/1148915776124878848.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/22.jpg",
+        "background_url": "./Assets/Backgrounds/65.jpg",
         "rank": "Nobda",
         "card_url": "./Assets/Cards/26.jpg",
-        "background_description": "genshin duo sexy"
+        "background_description": "Raiden : solo"
     },
     "1145682914483392624": {
         "image_path": "Profiles/1145682914483392624.png",
@@ -40,17 +40,17 @@
     "1096342703870050364": {
         "image_path": "Profiles/1096342703870050364.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/63.jpg",
+        "background_url": "./Assets/Backgrounds/47.jpg",
         "rank": "Nobda",
         "card_url": "./Assets/Cards/26.jpg",
-        "background_description": "Groot "
+        "background_description": "Bunny girl senpai"
     },
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/74.jpg",
+        "background_url": "./Assets/Backgrounds/41.jpg",
         "rank": "Stone",
-        "card_url": "./Assets/Cards/26.jpg",
-        "background_description": "kazutora: tokyo revnegers "
+        "card_url": "./Assets/Cards/2.jpg",
+        "background_description": "Minecreaft"
     }
 }
