@@ -40,17 +40,24 @@
     "1096342703870050364": {
         "image_path": "Profiles/1096342703870050364.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/47.jpg",
+        "background_url": "./Assets/Backgrounds/34.jpg",
         "rank": "Nobda",
-        "card_url": "./Assets/Cards/26.jpg",
-        "background_description": "Bunny girl senpai"
+        "card_url": "./Assets/Cards/1.jpg",
+        "background_description": "ryuk: death note "
     },
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/41.jpg",
+        "background_url": "./Assets/Backgrounds/69.png",
         "rank": "Stone",
-        "card_url": "./Assets/Cards/20.jpg",
-        "background_description": "Minecreaft"
+        "card_url": "./Assets/Cards/39.jpg",
+        "background_description": "sun ZIN woo"
+    },
+    "779264521583198228": {
+        "image_path": "Profiles/779264521583198228.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/11.png",
+        "rank": "Noob",
+        "card_url": "./Assets/Cards/1.jpg"
     }
 }

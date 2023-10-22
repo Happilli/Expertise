@@ -78,7 +78,17 @@ background_prices = {
     72: 4500,
     73: 9990,
     74: 10000,
-    75: 20000
+    75: 20000,
+    76: 25000,
+    77: 15500,
+    78: 24000,
+    79: 25500,
+    80: 19000,
+    81: 8000,
+    82: 30000,
+    83: 18000,
+    84: 9000,
+    85: 6900
 }
 
 # Define background descriptions (adjust as needed)
@@ -157,7 +167,17 @@ background_descriptions = {
     72: "power: blood devil",
     73: "violet : EVERGARDEN",
     74: "kazutora: tokyo revnegers ",
-    75: "Gundam"
+    75: "Gundam",
+    76: "ken  kaneki : tokyo ghoul",
+    77: "Gojo : damn",
+    78: "ichika : quintestial",
+    79: "nino : quintestials",
+    80: "ryomen sukuna",
+    81: "SAGIRI : cutest anime chatracter 10/10",
+    82: "hu tau : genshin impact",
+    83: "ZHONGLI",
+    84: "Itachi : Ur already in my genjutsu",
+    85: "itachi : daddy version"
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):
