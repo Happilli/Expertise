@@ -820,7 +820,10 @@ card_info = {
   "34.jpg": {"name": "mikey", "description": "KIck lee  ", "price": 2500},
   "35.jpg": {"name": "ichigo", "description": "shinigami, quincy, fullbringer maybe future soul king  ", "price": 17500},
   "36.jpg": {"name": "itachi", "description": "ur already in my genjutsu...  ", "price": 17500},
-  "37.jpg": {"name": "samrick", "description": "DEv photo.. ", "price": 175000}
+  "37.jpg": {"name": "samrick", "description": "DEv photo.. ", "price": 175000},
+  "38.jpg": {"name": "ryuma", "description": "king of swords : wano hero ", "price": 11500},
+  "39.jpg": {"name": "radien", "description": "raiden babe shogun : genshin  ", "price": 12500}
+
 
 }
 
