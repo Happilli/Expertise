@@ -254,7 +254,7 @@ async def leaderboard(ctx, top: int = 10):
     except Exception as e:
         await loading_msg.edit(content=f"An error occurred while generating the leaderboard: {e}")
 
-@bot.command(name="top")
+
 async def show_top(ctx):
     # This command should be used to show the top player (you need to implement this)
     top_player = await rank_flow.get_top_player()
