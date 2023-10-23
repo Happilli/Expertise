@@ -15,6 +15,7 @@ import requests
 from webserver import keep_alive
 from discord.ext.commands import check
 import imageio
+from discord.ui import View
 
 # Define the path to the folder containing your background images
 BACKGROUND_FOLDER = './Assets/Backgrounds/'
@@ -206,16 +207,65 @@ async def status(ctx):
         await ctx.send("The rank system is not initialized. Use `!startrankflow` to initialize it.")
 
 
+
+
+class MyView(discord.ui.View):
+    @discord.ui.button(label="Top Player", style=discord.ButtonStyle.primary, emoji="😎")
+    async def button_callback(self, interaction, button):
+        # await interaction.message.edit(content="You clicked the button!")
+
+        # Assuming "show_top" is a function that shows the top player.
+        top_player_embed = await show_top(interaction.channel)
+
+        if top_player_embed:
+            # Delete the leaderboard message
+            await interaction.message.delete()
+
+            # Send the top player embed
+            await interaction.channel.send(embed=top_player_embed)
+
+# @bot.command()
+# async def button(ctx):
+#     await ctx.send("This is a button!", view=MyView())
+
 @bot.command(name="lb")
 @is_registered()
 async def leaderboard(ctx, top: int = 10):
-  if top <= 0:
-    await ctx.send("Please provide a positive number for the leaderboard size."
-                   )
-    return
+    if top <= 0:
+        await ctx.send("Please provide a positive number for the leaderboard size.")
+        return
 
-  leaderboard_embed = rank_flow.get_leaderboard(top)
-  await ctx.send(embed=leaderboard_embed)
+    loading_msg = await ctx.send("Generating the leaderboard...")
+
+    try:
+        leaderboard_image = await rank_flow.get_leaderboard(top)
+
+        # Delete the loading message
+        await loading_msg.delete()
+
+        leaderboard_msg = await ctx.send(file=discord.File(leaderboard_image, "leaderboard.png"))
+
+        # Set up the view with the leaderboard message ID
+        view = MyView()
+        view.message_id = leaderboard_msg.id
+
+        # Send the leaderboard message with the view
+        await ctx.send(view=view)
+    except Exception as e:
+        await loading_msg.edit(content=f"An error occurred while generating the leaderboard: {e}")
+
+@bot.command(name="top")
+async def show_top(ctx):
+    # This command should be used to show the top player (you need to implement this)
+    top_player = await rank_flow.get_top_player()
+    if top_player:
+        embed = discord.Embed(title="Top Player", description=top_player, color=discord.Color.blue())
+        return embed  # Return the embed to be sent in the button_callback
+
+    return None  # Return None if there's no top player to show
+
+# You can remove or comment out the previous top command if you're using this approach.
+
 
 
 @bot.command()

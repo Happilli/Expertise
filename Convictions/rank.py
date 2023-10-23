@@ -1,6 +1,8 @@
 import discord
 import json
 import asyncio
+from PIL import Image, ImageDraw, ImageFont, ImageOps
+import io
 
 class RankFlow:
     def __init__(self, bot):
@@ -42,40 +44,76 @@ class RankFlow:
         else:
             return "Player not found."
 
-    def get_leaderboard(self, top=10):
+    async def get_leaderboard(self, top=10):
         sorted_leaderboard = sorted(self.data.items(), key=lambda x: x[1]["wins"], reverse=True)
+        headers = ["Rank", "Username", "Wins", "Losses", "Win Rate"]
+        column_percentages = [15, 35, 15, 15, 20]
 
-        embed = discord.Embed(
-            title="🏆 Leaderboard 🏆",
-            description="Top Players",
-            color=discord.Color.gold()
-        )
+        background_image = Image.open("Assets/lb.jpg")
+        draw = ImageDraw.Draw(background_image)
+        font = ImageFont.truetype("Fonts/Poppins.ttf", size=40)
+        text_color = (255, 255, 255)
+        column_positions = [int(1920 * sum(column_percentages[:i]) / 100) for i in range(len(column_percentages))]
+        y = 40
 
-        leaderboard_text = ""
+        for i, header in enumerate(headers):
+            x = column_positions[i]
+            header_width = len(header) * 15
+            x -= header_width // 2
+
+            if header == "Rank":
+                header_width = 15 * 2
+                x += 38
+
+            if header == "Username":
+                header_width = 35 * 2
+                x -= 75
+
+            draw.text((x, y), header, fill=text_color, font=font)
+            if i > 0:
+                draw.line([(x, 0), (x, 1080)], fill=text_color, width=2)
+
+        y += 60
+        draw.line([(0, y), (1920, y)], fill=text_color, width=2)
+        y += 20
 
         for idx, (user_id, stats) in enumerate(sorted_leaderboard[:top], start=1):
-            user = discord.utils.get(self.bot.get_all_members(), id=int(user_id)) or f"<@{user_id}>"
+            user = await self.bot.fetch_user(int(user_id))
+            username = user.name if user else f"{user_id}"
             wins, losses = stats["wins"], stats["losses"]
+            win_rate = wins / (wins + losses) * 100 if wins + losses > 0 else 0
 
-            leaderboard_text += f"{idx}. {user} - **W: {wins}** \\ **L: {losses}**\n"
-            
-            # Add a horizontal line after each player's entry
-            leaderboard_text += "―――――――――――――――――――\n"
+            for i, cell in enumerate([str(idx), username, str(wins), str(losses), f"{win_rate:.2f}%"]):
+                x = column_positions[i]
+                cell_width = len(cell) * 15
+                x -= cell_width // 2
 
-        embed.add_field(name="\u200B", value=leaderboard_text, inline=False)
+                if headers[i] == "Rank":
+                    cell_width = 15 * 2
+                    x += 30
 
-        return embed
+                if headers[i] == "Username":
+                    cell_width = 35 * 2
+                    x += 15
+
+                draw.text((x, y), cell, fill=text_color, font=font)
+
+            y += 60
+
+        img_byte_array = io.BytesIO()
+        background_image = ImageOps.expand(background_image, border=20, fill=(0, 0, 0))
+        background_image.save(img_byte_array, format="PNG")
+        img_byte_array.seek(0)
+
+        return img_byte_array
 
     async def battle_log(self, ctx, opponent: discord.User, wins: int):
         sender_id = str(ctx.author.id)
         opponent_id = str(opponent.id)
-
         if sender_id == opponent_id:
             return "You can't log a battle with yourself."
-
         if sender_id not in self.data or opponent_id not in self.data:
             return "Both players must initialize their rank data using `!startrankflow`."
-
         log_message = await ctx.send(f"{opponent.mention}, {ctx.author.mention} wants to log {wins} wins to you. React with ✅ to accept, ❌ to reject.")
         await log_message.add_reaction("✅")
         await log_message.add_reaction("❌")
@@ -96,3 +134,16 @@ class RankFlow:
 
         except asyncio.TimeoutError:
             return "Battle log request timed out. No changes were made."
+
+    async def get_top_player(self):
+        sorted_leaderboard = sorted(self.data.items(), key=lambda x: x[1]["wins"], reverse=True)
+        if sorted_leaderboard:
+            top_player_id, top_player_stats = sorted_leaderboard[0]
+            user = await self.bot.fetch_user(int(top_player_id))
+            if user:
+                top_player_name = user.name
+                top_player_wins = top_player_stats["wins"]
+                top_player_losses = top_player_stats["losses"]
+                top_player_win_rate = (top_player_wins / (top_player_wins + top_player_losses)) * 100
+                return f"Player: {top_player_name}, Wins: {top_player_wins}, Losses: {top_player_losses}, Win Rate: {top_player_win_rate:.2f}%"
+        return "No top player found"
