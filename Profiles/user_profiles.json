@@ -48,23 +48,30 @@
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/27.jpg",
-        "rank": "Stone",
+        "background_url": "./Assets/Backgrounds/74.jpg",
+        "rank": "Grandmaster",
         "card_url": "./Assets/Cards/2.jpg",
-        "background_description": "dragon Emperor"
+        "background_description": "kazutora: tokyo revnegers "
     },
     "779264521583198228": {
         "image_path": "Profiles/779264521583198228.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Noob",
+        "rank": "Nobda",
         "card_url": "./Assets/Cards/1.jpg"
     },
     "993124649611317328": {
         "image_path": "Profiles/993124649611317328.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Noob",
+        "rank": "Nobda",
+        "card_url": "./Assets/Cards/1.jpg"
+    },
+    "1154155003636887632": {
+        "image_path": "Profiles/1154155003636887632.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/11.png",
+        "rank": "Nobda",
         "card_url": "./Assets/Cards/1.jpg"
     }
 }
