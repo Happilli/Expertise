@@ -9,10 +9,10 @@
     "1148915776124878848": {
         "image_path": "Profiles/1148915776124878848.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/65.jpg",
+        "background_url": "./Assets/Backgrounds/41.jpg",
         "rank": "Nobda",
         "card_url": "./Assets/Cards/26.jpg",
-        "background_description": "Raiden : solo"
+        "background_description": "Minecreaft"
     },
     "1145682914483392624": {
         "image_path": "Profiles/1145682914483392624.png",
@@ -55,6 +55,13 @@
     },
     "779264521583198228": {
         "image_path": "Profiles/779264521583198228.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/11.png",
+        "rank": "Noob",
+        "card_url": "./Assets/Cards/1.jpg"
+    },
+    "993124649611317328": {
+        "image_path": "Profiles/993124649611317328.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
         "rank": "Noob",
