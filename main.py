@@ -16,6 +16,7 @@ from webserver import keep_alive
 from discord.ext.commands import check
 import imageio
 from discord.ui import View
+import io
 
 # Define the path to the folder containing your background images
 BACKGROUND_FOLDER = './Assets/Backgrounds/'
@@ -1310,17 +1311,17 @@ def load_rank_data():
 rank_data = load_rank_data()
 
 rank_thresholds = {
-    "Nobda": 0,
-    "Wooden": 10,
+    "Novice": 0,
+    "Rookie": 10,
     "Stone": 20,
     "Bronze": 30,
     "Silver": 50,
-    "Gold": 80,
-    "Platinum": 130,
-    "Diamond": 210,
-    "Master": 340,
-    "Grandmaster": 550,
-    "Legendary": 850
+    "Golden": 80,
+    "Titan": 130,
+    "Supreme": 210,
+    "Heroic": 340,
+    "Legend": 550,
+    "Saiyan": 850
 }
 
 
@@ -1329,17 +1330,17 @@ rank_thresholds = {
 async def tierlist(ctx):
   # Define the rank thresholds
   rank_thresholds = {
-      "Nobda": 0,
-      "Wooden": 10,
+      "Novice": 0,
+      "Rookie": 10,
       "Stone": 20,
       "Bronze": 30,
       "Silver": 50,
-      "Gold": 80,
-      "Platinum": 130,
-      "Diamond": 210,
-      "Master": 340,
-      "Grandmaster": 550,
-      "Legendary": 850
+      "Golden": 80,
+      "Titan": 130,
+      "Supreme": 210,
+      "Heroic": 340,
+      "Legend": 550,
+      "Saiyan": 850
   }
 
   # Create an embedded message to display the tier list
@@ -1361,14 +1362,43 @@ async def tierlist(ctx):
 @bot.command()
 @is_registered()
 async def viewrank(ctx):
-  user_id = str(ctx.author.id)
-  profile = user_profiles.get(user_id)
+    user_id = str(ctx.author.id)
+    profile = user_profiles.get(user_id)
 
-  if profile and "rank" in profile:
-    rank = profile["rank"]
-    await ctx.send(f"Your rank is: {rank}")
-  else:
-    await ctx.send("Rank not found.")
+    if profile and "rank" in profile:
+        rank = profile["rank"]
+        user = ctx.author
+        user_avatar = user.avatar.url if user.avatar else user.default_avatar.url
+
+        # Define a dictionary mapping ranks to text-based emojis
+        rank_icons = {
+            "Novice": "😊",
+            "Rookie": ":full_moon_with_face:",
+            "Stone": ":rock:",
+            "Bronze": "🥉",
+            "Silver": "🥈",
+            "Golden": "🥇",
+            "Titan": "🏋️‍♂️",
+            "Supreme": "👑",
+            "Heroic": "⚡",
+            "Legend": "🏆",
+            "Saiyan": "🐉"
+        }
+
+        embed = discord.Embed(
+            title=f"{user.display_name}'s Rank",
+            color=discord.Color.gold()
+        )
+
+        # Display the user's username and their rank at the top
+        embed.description = f"{rank} \n {rank_icons.get(rank, 'Rank icon not found')}"
+
+        # Set the user's avatar as the thumbnail
+        embed.set_thumbnail(url=user_avatar)
+
+        await ctx.send(embed=embed)
+    else:
+        await ctx.send("Rank not found.")
 
 
 @bot.command(name='rankupdate')

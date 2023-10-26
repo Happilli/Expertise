@@ -3,14 +3,14 @@
         "image_path": "Profiles/780294051090006016.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/1.jpg"
     },
     "1148915776124878848": {
         "image_path": "Profiles/1148915776124878848.png",
         "title": "Supreme",
         "background_url": "./Assets/Backgrounds/41.jpg",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/26.jpg",
         "background_description": "Minecreaft"
     },
@@ -18,7 +18,7 @@
         "image_path": "Profiles/1145682914483392624.png",
         "title": "Conqueror",
         "background_url": "./Assets/Backgrounds/23.jpg",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/5.jpg",
         "background_description": "seishiro Nagi"
     },
@@ -26,7 +26,7 @@
         "image_path": "Profiles/924305166692397058.png",
         "title": "Legendary",
         "background_url": "./Assets/Backgrounds/17.jpg",
-        "rank": "Wooden",
+        "rank": "Rookie",
         "card_url": "./Assets/Cards/3.jpg",
         "background_description": "Solo leveling"
     },
@@ -34,44 +34,44 @@
         "image_path": "Profiles/1015821583870337066.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/1.jpg"
     },
     "1096342703870050364": {
         "image_path": "Profiles/1096342703870050364.png",
         "title": "Supreme",
         "background_url": "./Assets/Backgrounds/65.jpg",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/39.jpg",
         "background_description": "Raiden : solo"
     },
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
         "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/74.jpg",
-        "rank": "Grandmaster",
+        "background_url": "./Assets/Backgrounds/81.png",
+        "rank": "Stone",
         "card_url": "./Assets/Cards/2.jpg",
-        "background_description": "kazutora: tokyo revnegers "
+        "background_description": "SAGIRI : cutest anime chatracter 10/10"
     },
     "779264521583198228": {
         "image_path": "Profiles/779264521583198228.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/1.jpg"
     },
     "993124649611317328": {
         "image_path": "Profiles/993124649611317328.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/1.jpg"
     },
     "1154155003636887632": {
         "image_path": "Profiles/1154155003636887632.png",
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Nobda",
+        "rank": "Novice",
         "card_url": "./Assets/Cards/1.jpg"
     }
 }
