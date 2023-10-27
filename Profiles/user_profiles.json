@@ -37,14 +37,6 @@
         "rank": "Novice",
         "card_url": "./Assets/Cards/1.jpg"
     },
-    "1096342703870050364": {
-        "image_path": "Profiles/1096342703870050364.png",
-        "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/65.jpg",
-        "rank": "Novice",
-        "card_url": "./Assets/Cards/39.jpg",
-        "background_description": "Raiden : solo"
-    },
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
         "title": "Supreme",
@@ -72,6 +64,13 @@
         "title": "Title Placeholder",
         "background_url": "./Assets/Backgrounds/11.png",
         "rank": "Novice",
+        "card_url": "./Assets/Cards/1.jpg"
+    },
+    "1096342703870050364": {
+        "image_path": "Profiles/1096342703870050364.png",
+        "title": "Title Placeholder",
+        "background_url": "./Assets/Backgrounds/11.png",
+        "rank": "Noob",
         "card_url": "./Assets/Cards/1.jpg"
     }
 }

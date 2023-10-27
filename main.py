@@ -1478,9 +1478,9 @@ async def botinfo(ctx):
   # Mention that it's made for Haxx Disaster and personal server
   embed.add_field(name="Purpose",
                   value="To Serve Haxx Disaster :earth_africa:")
-  # Mention that it's made for Haxx Disaster and personal server
-  embed.add_field(name="Website",
-                  value="https://RyuZinOh.github.io")
+  # # Mention that it's made for Haxx Disaster and personal server
+  # embed.add_field(name="Website",
+  #                 value="https://RyuZinOh.github.io")
 
   # Add a footer with text
   embed.set_footer(text="Thank you for using Expertise!")
