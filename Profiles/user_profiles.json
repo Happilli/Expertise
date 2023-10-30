@@ -1,76 +1,18 @@
 {
-    "780294051090006016": {
-        "image_path": "Profiles/780294051090006016.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Novice",
-        "card_url": "./Assets/Cards/1.jpg"
+    "1128651413535346708": {
+        "image_path": "Profiles/1128651413535346708.png",
+        "title": "Ninja",
+        "background_url": "./Assets/Backgrounds/54.jpg",
+        "rank": "Silver",
+        "card_url": "./Assets/Cards/1.jpg",
+        "background_description": "Levi akerman"
     },
-    "1148915776124878848": {
-        "image_path": "Profiles/1148915776124878848.png",
+    "1096342703870050364": {
+        "image_path": "Profiles/1096342703870050364.png",
         "title": "Supreme",
         "background_url": "./Assets/Backgrounds/41.jpg",
         "rank": "Novice",
         "card_url": "./Assets/Cards/26.jpg",
         "background_description": "Minecreaft"
-    },
-    "1145682914483392624": {
-        "image_path": "Profiles/1145682914483392624.png",
-        "title": "Conqueror",
-        "background_url": "./Assets/Backgrounds/23.jpg",
-        "rank": "Novice",
-        "card_url": "./Assets/Cards/5.jpg",
-        "background_description": "seishiro Nagi"
-    },
-    "924305166692397058": {
-        "image_path": "Profiles/924305166692397058.png",
-        "title": "Legendary",
-        "background_url": "./Assets/Backgrounds/17.jpg",
-        "rank": "Rookie",
-        "card_url": "./Assets/Cards/3.jpg",
-        "background_description": "Solo leveling"
-    },
-    "1015821583870337066": {
-        "image_path": "Profiles/1015821583870337066.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Novice",
-        "card_url": "./Assets/Cards/1.jpg"
-    },
-    "1128651413535346708": {
-        "image_path": "Profiles/1128651413535346708.png",
-        "title": "Supreme",
-        "background_url": "./Assets/Backgrounds/81.png",
-        "rank": "Stone",
-        "card_url": "./Assets/Cards/2.jpg",
-        "background_description": "SAGIRI : cutest anime chatracter 10/10"
-    },
-    "779264521583198228": {
-        "image_path": "Profiles/779264521583198228.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Novice",
-        "card_url": "./Assets/Cards/1.jpg"
-    },
-    "993124649611317328": {
-        "image_path": "Profiles/993124649611317328.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Novice",
-        "card_url": "./Assets/Cards/1.jpg"
-    },
-    "1154155003636887632": {
-        "image_path": "Profiles/1154155003636887632.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Novice",
-        "card_url": "./Assets/Cards/1.jpg"
-    },
-    "1096342703870050364": {
-        "image_path": "Profiles/1096342703870050364.png",
-        "title": "Title Placeholder",
-        "background_url": "./Assets/Backgrounds/11.png",
-        "rank": "Noob",
-        "card_url": "./Assets/Cards/1.jpg"
     }
 }
