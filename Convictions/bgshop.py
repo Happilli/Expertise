@@ -88,7 +88,9 @@ background_prices = {
     82: 30000,
     83: 18000,
     84: 9000,
-    85: 6900
+    85: 6900,
+    86: 14000,
+    87: 15000
 }
 
 # Define background descriptions (adjust as needed)
@@ -177,7 +179,9 @@ background_descriptions = {
     82: "hu tau : genshin impact",
     83: "ZHONGLI",
     84: "Itachi : Ur already in my genjutsu",
-    85: "itachi : daddy version"
+    85: "itachi : daddy version",
+    86: "gojo : nice ",
+    87: "gojo: cool"
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):
