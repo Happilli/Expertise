@@ -90,7 +90,12 @@ background_prices = {
     84: 9000,
     85: 6900,
     86: 14000,
-    87: 15000
+    87: 15000,
+    88: 18000,
+    89: 9000,
+    90: 6900,
+    91: 14000,
+    
 }
 
 # Define background descriptions (adjust as needed)
@@ -181,7 +186,11 @@ background_descriptions = {
     84: "Itachi : Ur already in my genjutsu",
     85: "itachi : daddy version",
     86: "gojo : nice ",
-    87: "gojo: cool"
+    87: "gojo: cool",
+    88: "rem",
+    89: "ulquiorra",
+    90: "coyote stark",
+    91: "aizen : bleach"
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):

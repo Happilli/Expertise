@@ -873,7 +873,8 @@ card_info = {
   "36.jpg": {"name": "itachi", "description": "ur already in my genjutsu...  ", "price": 17500},
   "37.jpg": {"name": "samrick", "description": "DEv photo.. ", "price": 175000},
   "38.jpg": {"name": "ryuma", "description": "king of swords : wano hero ", "price": 11500},
-  "39.jpg": {"name": "radien", "description": "raiden babe shogun : genshin  ", "price": 12500}
+  "39.jpg": {"name": "raiden", "description": "raiden babe shogun : genshin  ", "price": 12500},
+  "40.jpg": {"name": "rias", "description": "boob ?  ", "price": 50000}
 
 
 }
