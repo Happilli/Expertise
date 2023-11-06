@@ -95,6 +95,8 @@ background_prices = {
     89: 9000,
     90: 6900,
     91: 14000,
+    92: 19000,
+    93: 40000,
     
 }
 
@@ -190,7 +192,9 @@ background_descriptions = {
     88: "rem",
     89: "ulquiorra",
     90: "coyote stark",
-    91: "aizen : bleach"
+    91: "aizen : bleach",
+    92: "konoha",
+    93: "Shanks : drinkin"
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):
