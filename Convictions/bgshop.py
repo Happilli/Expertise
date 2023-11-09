@@ -103,7 +103,14 @@ background_prices = {
     97: 14000,
     98: 15000,
     99: 15500,
-    100: 55000
+    100: 55000,
+    101: 69000,
+    102: 14500,
+    103: 15000,
+    104: 15500,
+    105: 55000,
+    106: 69000,
+    107: 14500
     
 }
 
@@ -208,7 +215,14 @@ background_descriptions = {
     97: "Sayori ",
     98: "kenpachi",
     99: "loli : esdeth",
-    100: "toji fushigoro "
+    100: "toji fushigoro ",
+    101: "goku da vegeta",
+    102: "free dela hoya",
+    103: "Elaina : journey of a cute witch ",
+    104: "AOT",
+    105: "Mikasha ",
+    106: "Mikasha in jungle",
+    107: "yorr cryin?"
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):
