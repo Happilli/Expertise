@@ -797,7 +797,7 @@ async def buybg(ctx, background_id: int):
             currency_data[user_id] = currency_data.get(user_id, 0) - price
 
             # Determine the extension type based on the background_id
-            if background_id in [11, 69, 81, 93, 94, 95, 96, 98, 99, 100, 1011 104, 107 ]:  # Background 11 is in PNG format
+            if background_id in [11, 69, 81, 93, 94, 95, 96, 98, 99, 100, 101, 104, 107 ]:  # Background 11 is in PNG format
                 extension = 'png'
             # elif background_id in [67, 68]:  # Backgrounds 67 and 68 are in GIF format
             #     extension = 'gif'
@@ -874,8 +874,12 @@ card_info = {
   "37.jpg": {"name": "samrick", "description": "DEv photo.. ", "price": 175000},
   "38.jpg": {"name": "ryuma", "description": "king of swords : wano hero ", "price": 11500},
   "39.jpg": {"name": "raiden", "description": "raiden babe shogun : genshin  ", "price": 12500},
-  "40.jpg": {"name": "rias", "description": "boob ?  ", "price": 50000}
-
+  "40.jpg": {"name": "rias", "description": "boob ?  ", "price": 50000},
+  "41.jpg": {"name": "aot", "description": "attk on titan wall scene ", "price": 20000},
+  "42.png": {"name": "guts", "description": "fade to black ", "price": 12000},
+  "43.png": {"name": "power", "description": "blood devil sexyy ", "price": 12000},
+  "44.png": {"name": "garou", "description": "monster form ", "price": 12000},
+  "45.jpg": {"name": "crown", "description": "multi liner", "price": 12000},
 
 }
 
