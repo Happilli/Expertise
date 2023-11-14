@@ -110,7 +110,13 @@ background_prices = {
     104: 15500,
     105: 55000,
     106: 69000,
-    107: 14500
+    107: 14500,
+    108: 15000,
+    109: 8000,
+    110: 18000,
+    111: 14000,
+    112: 15000,
+    113: 14000
     
 }
 
@@ -222,7 +228,13 @@ background_descriptions = {
     104: "AOT",
     105: "Mikasha ",
     106: "Mikasha in jungle",
-    107: "yorr cryin?"
+    107: "yorr cryin?",
+    108: "sujume",
+    109: "pain",
+    110: "dazai",
+    111: "gojo",
+    112: "Zenitsu",
+    113: "Demon slayer"
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):

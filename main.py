@@ -797,7 +797,7 @@ async def buybg(ctx, background_id: int):
             currency_data[user_id] = currency_data.get(user_id, 0) - price
 
             # Determine the extension type based on the background_id
-            if background_id in [11, 69, 81, 93, 94, 95, 96, 98, 99, 100, 101, 104, 107 ]:  # Background 11 is in PNG format
+            if background_id in [11, 69, 81, 93, 94, 95, 96, 98, 99, 100, 101, 104, 107, 108, 109, 111 ]:  # Background 11 is in PNG format
                 extension = 'png'
             # elif background_id in [67, 68]:  # Backgrounds 67 and 68 are in GIF format
             #     extension = 'gif'
@@ -1949,12 +1949,12 @@ async def adduserid(ctx, user_id_to_add: int):
 
 # Constants
 FINAL_GIF_SIZE = (690, 300)
-AVATAR_SIZE = (120, 120)
+AVATAR_SIZE = (110, 110)
 AVATAR_BORDER_WIDTH = 2
 AVATAR_BORDER_COLOR = (0, 255, 255)
 BORDER_WIDTH = 2
 BORDER_COLOR = (0, 255, 255)
-FONT_PATH = 'Fonts/Poppins.ttf'
+FONT_PATH = 'Fonts/xmas.ttf'
 USERNAME_FONT_SIZE = 26
 TITLE_FONT_SIZE = 18
 RANK_FONT_SIZE = 22
@@ -2012,7 +2012,7 @@ def read_json_content():
         print("user_profiles.json file not found.")
         return {}
 
-@bot.command()
+@bot.command(name = "zoop")
 @is_registered()
 async def generatedeluxeprofile(ctx):
     json_content = read_json_content()
@@ -2045,7 +2045,7 @@ async def generatedeluxeprofile(ctx):
     with open(gif_filename, 'rb') as file:
         await ctx.send(file=discord.File(file))
 
-@bot.command()
+@bot.command(name = "dp")
 @is_registered()
 async def deluxeprofile(ctx):
     loading_msg = await ctx.send("Loading your deluxe profile...")
@@ -2075,7 +2075,7 @@ async def deluxeprofile(ctx):
     finally:
         await loading_msg.delete()  # Delete the loading message after everything is done
 
-@bot.command()
+@bot.command(name = "ls")
 @is_registered()
 async def luxuryshop(ctx):
     with open('Deluxe_Profile/deluxe.txt', 'r') as file:
@@ -2100,7 +2100,7 @@ async def luxuryshop(ctx):
     else:
         await ctx.send("No luxury GIFs available in the shop at the moment.")
 
-@bot.command()
+@bot.command(name = "vl")
 @is_registered()
 async def viewluxury(ctx, gif_id: int):
     with open('Deluxe_Profile/deluxe.txt', 'r') as file:
@@ -2152,7 +2152,7 @@ async def applybg(ctx, bg_name: str):
         profile_gif_path = os.path.join('Deluxe_Profile/profiles', f'{user_id}_profile.gif')
 
         if not os.path.exists(profile_gif_path):
-            await ctx.send("You don't have an existing profile GIF. Please generate one first using `!generatedeluxeprofile`.")
+            await ctx.send("You don't have an existing profile GIF. Please generate one first using ``zoop``.")
             return
 
         loading_msg = await ctx.send(f"Applying {bg_name} to your Luxury profile ..")

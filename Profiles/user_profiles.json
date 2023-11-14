@@ -1,10 +1,18 @@
 {
     "1128651413535346708": {
         "image_path": "Profiles/1128651413535346708.png",
-        "title": "Ninja",
-        "background_url": "./Assets/Backgrounds/107.png",
+        "title": "Malice",
+        "background_url": "./Assets/Backgrounds/41.jpg",
         "rank": "Silver",
-        "card_url": "./Assets/Cards/45.jpg",
-        "background_description": "yorr cryin?"
+        "card_url": "./Assets/Cards/26.jpg",
+        "background_description": "Minecreaft"
+    },
+    "1096342703870050364": {
+        "image_path": "Profiles/1096342703870050364.png",
+        "title": "Thigh Lover",
+        "background_url": "./Assets/Backgrounds/110.jpg",
+        "rank": "Noob",
+        "card_url": "./Assets/Cards/39.jpg",
+        "background_description": "dazai"
     }
 }
