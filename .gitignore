@@ -1,0 +1,11 @@
+Convictions/
+webserver.py
+pyproject.toml
+replit.nix
+_pycache_
+poetry.lock
+.replit
+.pythonlibs
+Assets
+Profiles
+replit.nix
