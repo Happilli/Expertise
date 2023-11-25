@@ -5,7 +5,7 @@ Luxuries
 webserver.py
 pyproject.toml
 replit.nix
-_pycache_
+__pycache__
 poetry.lock
 .replit
 .pythonlibs
