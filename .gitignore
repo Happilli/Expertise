@@ -2,7 +2,6 @@ Currency
 Deluxe_Profile
 Fonts
 Luxuries
-webserver.py
 pyproject.toml
 replit.nix
 __pycache__
@@ -12,3 +11,4 @@ poetry.lock
 Assets
 Profiles
 replit.nix
+clanWar
