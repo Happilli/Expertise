@@ -797,7 +797,7 @@ async def buybg(ctx, background_id: int):
             currency_data[user_id] = currency_data.get(user_id, 0) - price
 
             # Determine the extension type based on the background_id
-            if background_id in [11, 69, 81, 93, 94, 95, 96, 98, 99, 100, 101, 104, 107, 108, 109, 111 ]:  # Background 11 is in PNG format
+            if background_id in [11, 69, 81, 93, 94, 95, 96, 98, 99, 100, 101, 104, 107, 108, 109, 111, 116 ]:  # Background 11 is in PNG format
                 extension = 'png'
             # elif background_id in [67, 68]:  # Backgrounds 67 and 68 are in GIF format
             #     extension = 'gif'
