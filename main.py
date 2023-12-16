@@ -17,6 +17,7 @@ from discord.ext.commands import check
 import imageio
 from discord.ui import View
 import io
+import random
 
 # Define the path to the folder containing your background images
 BACKGROUND_FOLDER = './Assets/Backgrounds/'
@@ -1474,12 +1475,20 @@ def is_allowed_user(ctx):
 
 
 @bot.command()
-@commands.check(is_allowed_user)  # Apply the custom check
-async def startwar(ctx, team1_name, team2_name, goals):
-  # Call the start_war function to initiate a war
-  clanwar.start_war(team1_name, team2_name, goals)
-  await ctx.send(
-      f"War between {team1_name} and {team2_name} started with goals: {goals}")
+@commands.check(is_allowed_user)
+async def startwar(ctx, team1_name=None, team2_name=None, goals=None):
+    # Check if any of the required arguments is missing
+    if team1_name is None or team2_name is None or goals is None:
+        await ctx.send("Incomplete command. Please provide all required arguments.\n"
+                       "Syntax: `e!startwar <team1_name> <team2_name> <goals>`")
+    elif team1_name.lower() == team2_name.lower():
+        await ctx.send("Error: Team names cannot be the same.")
+    else:
+        # Call the start_war function to initiate a war
+        clanwar.start_war(team1_name, team2_name, goals)
+        await ctx.send(
+            f"**War between {team1_name} and {team2_name} started with goals: {goals}**")
+
 
 
 @bot.command(name="waradd")
@@ -1502,7 +1511,7 @@ async def get_war_data(ctx):
         war_data = {}
 
     embed = discord.Embed(
-        title=f'* {war_data.get("team1", {}).get("name", "Team 1")} VS {war_data.get("team2", {}).get("name", "Team 2")}*',
+        title=f'**_{war_data.get("team1", {}).get("name", "Team 1")} VS {war_data.get("team2", {}).get("name", "Team 2")}_**',
         color=discord.Color.blurple()  # Using 'blurple' as a transparent blue color
     )
 
@@ -1518,13 +1527,14 @@ async def get_war_data(ctx):
         team1_goals = war_data['team1']['goals']
 
         embed.add_field(
-            name=f'**TEAM {war_data["team1"]["name"]} \n **',
-            value=f'*{team1_users}*\n\n**STATUS :** **{team1_status}** |  **{team1_goals}**',
+            name=f'**__TEAM {war_data["team1"]["name"]}__ \n **',
+            value = f'**{team1_users}\n\nSTATUS: {team1_status} | {team1_goals}**',
+
             inline=False
         )
 
         # Add a line to separate teams
-        embed.add_field(name='\u200b', value='**======================================**', inline=False)
+        embed.add_field(name='\u200b', value='**==============================**', inline=False)
 
         # Add members of Team 2
         team2_users = '\n'.join([f'• {user}' for user in war_data['team2']['users']])
@@ -1532,8 +1542,8 @@ async def get_war_data(ctx):
         team2_goals = war_data['team2']['goals']
 
         embed.add_field(
-            name=f'**TEAM {war_data["team2"]["name"]} \n**',
-            value=f'*{team2_users}*\n\n**STATUS :** **{team2_status}** | **{team2_goals}**',
+            name = f'**__TEAM {war_data["team2"]["name"]}__ \n**',
+            value=f'**{team2_users}\n\nSTATUS: {team2_status} | {team2_goals}**',
             inline=False
         )
 
@@ -1568,7 +1578,7 @@ async def get_war_data(ctx):
 
         # Add footer with war information and circular image
         footer_icon_url = "https://cdn.discordapp.com/attachments/1145967795184607282/1185521342532046918/R.png?ex=658fe9c9&is=657d74c9&hm=73c578bb76f091e7f325b3004b54ef5c3d209651b3f406d0101573e2e294f63c&"
-        embed.set_footer(text="War Information: This is a fierce battle between two powerful teams!", icon_url=footer_icon_url)
+        embed.set_footer(text="use ``e!warlog @mention `` to log your wins !", icon_url=footer_icon_url)
 
         await ctx.send(embed=embed, file=discord.File(modified_image_path))
     else:
@@ -2200,6 +2210,71 @@ async def removeuserid(ctx, user_id_to_remove: int):
     else:
         await ctx.send("You are not authorized to use this command.")
 
+
+
+@bot.command(name='calculate', aliases=['calc'], help='Perform arithmetic operations.')
+@is_registered()
+async def calculate(ctx, *, expression: str):
+    try:
+        result = eval(expression)
+
+        # Create an embed object
+        embed = discord.Embed(title=f"{ctx.author.name}'s Calculation Result", color=0x00ff00)
+        embed.add_field(name="Expression", value=f"`{expression}`", inline=False)
+        embed.add_field(name="Result", value=str(result), inline=False)
+
+        # Set the user's avatar as the thumbnail
+        embed.set_thumbnail(url=ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url)
+
+        # Send the embed message
+        await ctx.send(embed=embed)
+    except Exception as e:
+        await ctx.send(f"Error: {str(e)}")
+
+@bot.command(name='roll', help='Rolls a random number between 1 and 100.')
+@is_registered()
+async def roll(ctx):
+    # Get the user ID
+    user_id = 1128651413535346708
+
+
+    # Check if the command is invoked by the specific user
+    if ctx.author.id == user_id:
+        # If the user is the specified one, always give a roll greater than 69
+        result = random.randint(70, 100)
+    else:
+        # Otherwise, generate a random number between 1 and 100
+        result = random.randint(1, 100)
+
+    # Create an embed object
+    embed = discord.Embed(title=f"{ctx.author.name}'s Roll Result", color=0x00ff00)
+    embed.add_field(name="You got", value=str(result), inline=False)
+
+    # Set the user's avatar as the thumbnail
+    embed.set_thumbnail(url=ctx.author.avatar.url if ctx.author.avatar else ctx.author.default_avatar.url)
+
+    # Send the embed message
+    await ctx.send(embed=embed)
+
+@bot.command(name='clear', help='Clear a specified number of messages.')
+@is_registered()
+async def clear_messages(ctx, amount: int):
+    # Check if the amount is within a reasonable range
+    if 1 <= amount <= 100:
+        # Delete the command message
+        await ctx.message.delete()
+
+        # Delete the specified number of messages
+        deleted_messages = await ctx.channel.purge(limit=amount)
+
+        # Send a message indicating the number of messages cleared
+        clear_message = await ctx.send(f"Cleared {len(deleted_messages)} messages.")
+
+        # Delete the "Cleared X messages" message after a few seconds
+        await asyncio.sleep(5)
+        await clear_message.delete()
+    else:
+        await ctx.send("Please provide a number between 1 and 100 for the amount to clear.")
 
 # Start the web server
 keep_alive()
