@@ -210,25 +210,6 @@ async def status(ctx):
 
 
 
-class MyView(discord.ui.View):
-    @discord.ui.button(label="Top Player", style=discord.ButtonStyle.primary, emoji="😎")
-    async def button_callback(self, interaction, button):
-        # await interaction.message.edit(content="You clicked the button!")
-
-        # Assuming "show_top" is a function that shows the top player.
-        top_player_embed = await show_top(interaction.channel)
-
-        if top_player_embed:
-            # Delete the leaderboard message
-            await interaction.message.delete()
-
-            # Send the top player embed
-            await interaction.channel.send(embed=top_player_embed)
-
-# @bot.command()
-# async def button(ctx):
-#     await ctx.send("This is a button!", view=MyView())
-
 @bot.command(name="lb")
 @is_registered()
 async def leaderboard(ctx, top: int = 10):
@@ -255,17 +236,6 @@ async def leaderboard(ctx, top: int = 10):
     except Exception as e:
         await loading_msg.edit(content=f"An error occurred while generating the leaderboard: {e}")
 
-
-async def show_top(ctx):
-    # This command should be used to show the top player (you need to implement this)
-    top_player = await rank_flow.get_top_player()
-    if top_player:
-        embed = discord.Embed(title="Top Player", description=top_player, color=discord.Color.blue())
-        return embed  # Return the embed to be sent in the button_callback
-
-    return None  # Return None if there's no top player to show
-
-# You can remove or comment out the previous top command if you're using this approach.
 
 
 
@@ -1524,73 +1494,85 @@ async def addusertoteam(ctx, user_id, team_name):
 
 
 @bot.command(name="warstats")
-# @is_registered()
-async def getwardata(ctx):
-    # Check if the war data JSON file exists and load it
+async def get_war_data(ctx):
     try:
         with open('clanWar/clanwar.json', 'r') as war_file:
             war_data = json.load(war_file)
     except FileNotFoundError:
         war_data = {}
 
-    # Create an embedded message to display the current war data
     embed = discord.Embed(
-        title='Current War Data',
-        color=discord.Color.green()  # Customize the color
+        title=f'* {war_data.get("team1", {}).get("name", "Team 1")} VS {war_data.get("team2", {}).get("name", "Team 2")}*',
+        color=discord.Color.blurple()  # Using 'blurple' as a transparent blue color
     )
 
-    # Check if there are teams in the war data
+    embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/1145967795184607282/1185520287710728222/gJ86NktZxbIHD9bA5kFFqAFMsdfgA89uXMAv8XtiR17NcRuewAAAAASUVORK5CYII.png?ex=658fe8ce&is=657d73ce&hm=fa02b13f3e64dea9cca3de8d9cca4fb7860fafc2d9e19eb7b4b7a6d852421ad8&")
+
     if 'team1' in war_data and 'team2' in war_data:
-        # Add team information to the embed message
-        for team_name, team_data in war_data.items():
-            team_users = ', '.join(team_data['users'])
-            team_goals = team_data['goals']
-            team_status = team_data['current_status']
+        # Add a line to separate teams
+        embed.description = '**+--------+----------+---------**'
 
-            embed.add_field(
-                name=f'Team {team_data["name"]}',
-                value=f'Users: {team_users}\nGoals: {team_goals}\nCurrent Status: {team_status}',
-                inline=False
-            )
+        # Add members of Team 1
+        team1_users = '\n'.join([f'• {user}' for user in war_data['team1']['users']])
+        team1_status = war_data['team1']['current_status']
+        team1_goals = war_data['team1']['goals']
 
-        # Save the image path
+        embed.add_field(
+            name=f'**TEAM {war_data["team1"]["name"]} \n **',
+            value=f'*{team1_users}*\n\n**STATUS :** **{team1_status}** |  **{team1_goals}**',
+            inline=False
+        )
+
+        # Add a line to separate teams
+        embed.add_field(name='\u200b', value='**======================================**', inline=False)
+
+        # Add members of Team 2
+        team2_users = '\n'.join([f'• {user}' for user in war_data['team2']['users']])
+        team2_status = war_data['team2']['current_status']
+        team2_goals = war_data['team2']['goals']
+
+        embed.add_field(
+            name=f'**TEAM {war_data["team2"]["name"]} \n**',
+            value=f'*{team2_users}*\n\n**STATUS :** **{team2_status}** | **{team2_goals}**',
+            inline=False
+        )
+
         image_path = 'clanWar/battle.jpg'
+        embed.set_image(url='attachment://modified_image.png')  # Use PNG for transparency
 
-        # Set the image for the embedded message
-        embed.set_image(url='attachment://modified_image.jpg')
-
-        # Open the image
-        image = Image.open(image_path)
+        image = Image.open(image_path).convert("RGBA")
         draw = ImageDraw.Draw(image)
 
-        # Set the font size (you can adjust the size)
-        font_size = 42  # You can change this value to adjust the font size
-        font = ImageFont.truetype(
-            "Fonts/Poppins.ttf",
-            font_size)  # Replace with the path to your font file
+        font_size = 42
+        font_path = "Fonts/Poppins.ttf"
+        font = ImageFont.truetype(font_path, font_size)
 
-        # Add team names at the top
         team1_name = war_data['team1']['name']
         team2_name = war_data['team2']['name']
 
-        # Set fixed X and Y positions for team names at the top
+        # Add transparent black background
+        transparent_black = Image.new('RGBA', (image.width, 80), (0, 0, 0, 150))
+        image.paste(transparent_black, (0, 0), transparent_black)
+
         x_position1 = 20
         x_position2 = image.width - len(team2_name) * (font_size // 2) - 69
         y_position = 20
 
-        # Add team names to the image at the top
-        draw.text((x_position1, y_position), team1_name, fill="white", font=font)
-        draw.text((x_position2, y_position), team2_name, fill="white", font=font)
+        # Change text color to neon cyan (R: 0, G: 255, B: 255)
+        neon_cyan_color = (0, 255, 255)
+        draw.text((x_position1, y_position), team1_name, fill=neon_cyan_color, font=font)
+        draw.text((x_position2, y_position), team2_name, fill=neon_cyan_color, font=font)
 
-        # Save the modified image
-        image.save('clanWar/modified_image.jpg')
+        modified_image_path = 'clanWar/modified_image.png'
+        image.save(modified_image_path)
 
-        # Send the embedded message with the modified image as an attachment
-        await ctx.send(embed=embed,
-                       file=discord.File('clanWar/modified_image.jpg'))
+        # Add footer with war information and circular image
+        footer_icon_url = "https://cdn.discordapp.com/attachments/1145967795184607282/1185521342532046918/R.png?ex=658fe9c9&is=657d74c9&hm=73c578bb76f091e7f325b3004b54ef5c3d209651b3f406d0101573e2e294f63c&"
+        embed.set_footer(text="War Information: This is a fierce battle between two powerful teams!", icon_url=footer_icon_url)
+
+        await ctx.send(embed=embed, file=discord.File(modified_image_path))
     else:
         await ctx.send('No war data available.')
-
 
 @bot.command()
 # @is_registered()
