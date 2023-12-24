@@ -119,7 +119,10 @@ background_prices = {
     113: 14000,
     114: 29000,
     115: 28000,
-    116: 30000
+    116: 30000,
+    117: 30000,
+    118: 12000,
+    119: 16000
     
 }
 
@@ -240,7 +243,10 @@ background_descriptions = {
     113: "Demon slayer",
     114: "Gojo staoru purple hollow",
     115: "uzui",
-    116: "chainsaw man : makima"
+    116: "chainsaw man : makima",
+    117: "rei sakuma",
+    118: "jjk",
+    119: "green "
 }
 
 async def show_background_shop(ctx, background_folder, user_balance,  filtered_backgrounds=None):
