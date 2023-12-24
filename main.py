@@ -705,6 +705,114 @@ class BackgroundShopMenu(menus.Menu):
             self.page += 1
             await self.message.edit(embed=self.get_page_embed())
 
+@bot.command(name='viewbg')
+@is_registered()  # Assuming you have an is_registered decorator for user registration
+async def view_background(ctx, background_id: int):
+    background_folder = 'Assets/Backgrounds/'  # Define your background folder
+
+    # Check if the requested background ID exists
+    if background_id in background_descriptions:
+        # Determine the file extension based on the existence of JPG, PNG, and GIF files
+        jpg_background = os.path.join(background_folder, f'{background_id}.jpg')
+        png_background = os.path.join(background_folder, f'{background_id}.png')
+        gif_background = os.path.join(background_folder, f'{background_id}.gif')
+
+        if os.path.exists(jpg_background):
+            selected_background = f'{background_id}.jpg'
+        elif os.path.exists(png_background):
+            selected_background = f'{background_id}.png'
+        elif os.path.exists(gif_background):
+            selected_background = f'{background_id}.gif'
+        else:
+            await ctx.send('Background image not found.')
+            return
+
+        background_path = os.path.join(background_folder, selected_background)
+
+        # Get the description for the selected background from the imported background_descriptions dictionary
+        description = background_descriptions.get(background_id, "No Description")
+
+        # Create an embedded message
+        embed = discord.Embed(
+            title=f'Viewing Background {background_id}',
+            description=description,  # Set the description of the image
+            color=discord.Color.blue()  # You can change the color as needed
+        )
+
+        # Add the selected background image as a field in the embedded message
+        if selected_background.endswith('.gif'):
+            embed.set_image(url=f"attachment://{selected_background}")
+        else:
+            embed.set_image(url=f"attachment://{selected_background}")
+
+        # Get the price for the selected background from the imported background_prices dictionary
+        price = background_prices.get(background_id, "N/A")  # Get the price or "N/A" if not found
+
+        # Add the price to the embedded message
+        embed.add_field(name="Price", value=f"{price} redants", inline=False)
+
+        # Send the embedded message with the selected background image as an attachment
+        with open(background_path, 'rb') as background_file:
+            file = discord.File(background_file, filename=selected_background)
+            await ctx.send(embed=embed, file=file)
+    else:
+        await ctx.send('Invalid background ID.')
+
+
+# Define the path to the folder containing background images
+MY_FOLDER = './Assets/Backgrounds/'
+
+
+@bot.command()
+@is_registered()
+async def buybg(ctx, background_id: int):
+    user_id = str(ctx.author.id)
+
+    # Load the currency data from the JSON file
+    with open('Currency/currency.json', 'r') as currency_file:
+        currency_data = json.load(currency_file)
+
+    # Check if the provided background_id is valid
+    if 1 <= background_id <= len(background_prices):
+        price = background_prices[background_id]
+
+        # Check if the user has enough redants to make the purchase
+        if currency_data.get(user_id, 0) >= price:
+            # Deduct the cost of the background from the user's balance
+            currency_data[user_id] = currency_data.get(user_id, 0) - price
+
+            # Determine the extension type based on the background_id
+            if background_id == 11:  # Background 11 is in PNG format
+                extension = 'png'
+            elif background_id in [67, 68]:  # Backgrounds 67 and 68 are in GIF format
+                extension = 'gif'
+            else:
+                extension = 'jpg'  # All other backgrounds are in JPG format
+
+            # Generate the background URL based on the background_id and extension
+            background_url = os.path.join(MY_FOLDER, f'{background_id}.{extension}')
+
+            # Get the description for the purchased background from the imported background_descriptions dictionary
+            description = background_descriptions.get(background_id, "No Description")
+
+            # Update the user's profile with the purchased background URL and description
+            user_profiles[user_id]['background_url'] = background_url
+            user_profiles[user_id]['background_description'] = description
+            save_user_profiles()  # You need to implement this function to save user profiles
+
+            # Update the currency data in the JSON file
+            with open('Currency/currency.json', 'w') as currency_file:
+                json.dump(currency_data, currency_file, indent=4)  # Indent for better readability
+
+            # Send a confirmation message to the user with the description
+            await ctx.send(
+                f'You have successfully purchased Background ``{background_id}`` named  ``{description}``. Your new background has been applied to your render.\n'
+            )
+
+        else:
+            await ctx.send("You don't have enough redants to purchase this background.")
+    else:
+        await ctx.send("Invalid background ID.")
 
 
 async def image_to_bytes(image):
@@ -790,20 +898,88 @@ async def showroom(ctx, *args):
             img = Image.open(image_path)
             img = img.resize((canvas_width, canvas_height), Image.NEAREST)
             canvas.paste(img, (0, 0))
-            await ctx.send(f"Here is the image located in Row {row}, Column {col}.")
+
+            # Display the image ID before the image and provide suggestions below the image
+            await ctx.send(f"Here is the image with ID {image_name[:-4]} located in Row {row}, Column {col}.")
+
+            # Save the canvas as a BytesIO object
+            image_bytes = await image_to_bytes(canvas)
+
+            # Send the canvas as an image
+            await ctx.send(file=discord.File(image_bytes, filename="canvas.png"))
+
+            # Provide suggestions below the image
+            await ctx.send(f"For more info, use `e!viewbg {image_name[:-4]}` or buy it with `e!buybg {image_name[:-4]}`.")
         else:
+            # If invalid row and column values are provided, send an error message
             await ctx.send("Invalid row and column values.")
-
-    # Save the canvas as a BytesIO object
-    image_bytes = await image_to_bytes(canvas)
-
-    # Send the canvas as an image
-    await ctx.send(file=discord.File(image_bytes, filename="canvas.png"))
+    else:
+        # If no arguments are provided, suggest using parameters
+        await ctx.send("You can use parameters like `showroom 5x3` to display a specific image. "
+                       f"For more info on a specific image, use `e!viewbg [id]` or buy it with `e!buybg [id]`.")
 
     # Remove loading message
     await loading_message.delete()
 
 
+
+
+# Define the path to the folder containing card images
+card_folder = './Assets/Cards/'  # Update with your actual path
+
+# Define card information with descriptions and prices
+card_info = {
+  "1.jpg": {"name": "Sasuke", "description": "Akatsuki version", "price": 5100},
+  "2.jpg": {"name": "Goku", "description": "version Ultra instinct !", "price": 15000},
+  "3.jpg": {"name": "Gojo", "description": "Gojo the free version", "price": 20000},
+  "4.jpg": {"name": "senku", "description": "dr. stone scienctist prehstoric ", "price": 5000},
+  "5.jpg": {"name": "nagi", "description": "blue lock : lazy genius", "price": 5900},
+  "6.jpg": {"name": "bachira", "description": "Blue lock: monster inside me ", "price": 10000},
+  "7.jpg": {"name": "kaguya", "description": "shinomiya kaguya the sexy ", "price": 9000},
+  "8.jpg": {"name": "Esdeath", "description": "the fallen angel: ice princess ", "price": 14000},
+  "9.jpg": {"name": "byakyuya", "description": "senbon zakura kageyoshi", "price": 12000},
+  "10.jpg": {"name": "killua", "description": "fast AF", "price": 4000},
+  "11.jpg": {"name": "Sukuna", "description": "greatest curse spirit", "price": 18000},
+  "12.jpg": {"name": "Saitama", "description": "Can solo your fav anime-verse", "price": 25000},
+  "13.jpg": {"name": "nami", "description": "weather babe", "price": 11000},
+  "14.jpg": {"name": "ace", "description": "fire fist asce", "price": 4900},
+  "15.jpg": {"name": "zoro", "description": "king of the hell", "price": 17000},
+  "16.jpg": {"name": "luffy", "description": "future king of the pirates !", "price": 21000},
+  "17.jpg": {"name": "sakamoto", "description": "have u heard of me?", "price": 15000},
+  "18.jpg": {"name": "killua2", "description": "fast AF boiee", "price": 14000},
+  "19.jpg": {"name": "usopp", "description": "greastest god of al time, d god, shogei king", "price": 18000},
+  "20.jpg": {"name": "kurapika", "description": "literally , takne a coffin for the enemy ", "price": 25000},
+  "21.jpg": {"name": "giyu", "description": "shinobu's babe fr.", "price": 12000},
+  "22.jpg": {"name": "l", "description": "hmm, the best genus ever has high iq AF", "price": 13000},
+  "23.jpg": {"name": "shanks", "description": "has the best emperor haki ever !", "price": 18000},
+  "24.jpg": {"name": "gon", "description": "his daddy left him, xd", "price": 21000},
+  "25.jpg": {"name": "light", "description": "kira aka kami sama xD", "price": 12000},
+  "26.jpg": {"name": "rin", "description": "da' wablu guy ", "price": 24000},
+  "27.jpg": {"name": "sanji", "description": "ladies rikkybell aka chef ", "price": 19000},
+  "28.jpg": {"name": "franky", "description": "robotic pirate ", "price": 9000},
+  "29.jpg": {"name": "chopper", "description": "big mom babe", "price": 7500},
+  "30.jpg": {"name": "brook", "description": "panty lorde ", "price": 7000},
+  "31.jpg": {"name": "robin", "description": "babe material  ", "price": 6500},
+  "32.jpg": {"name": "law", "description": "water law trafalgar d. shambles ", "price": 18000},
+  "33.jpg": {"name": "mori", "description": "bulies DBZ ? ", "price": 17000},
+  "34.jpg": {"name": "mikey", "description": "KIck lee  ", "price": 2500},
+  "35.jpg": {"name": "ichigo", "description": "shinigami, quincy, fullbringer maybe future soul king  ", "price": 17500},
+  "36.jpg": {"name": "itachi", "description": "ur already in my genjutsu...  ", "price": 17500},
+  "37.jpg": {"name": "safal", "description": "DEv photo.. ", "price": 175000},
+  "38.jpg": {"name": "ryuma", "description": "king of swords : wano hero ", "price": 11500},
+  "39.jpg": {"name": "raiden", "description": "raiden babe shogun : genshin  ", "price": 12500},
+  "40.jpg": {"name": "rias", "description": "boob ?  ", "price": 50000},
+  "41.jpg": {"name": "aot", "description": "attk on titan wall scene ", "price": 20000},
+  "42.png": {"name": "guts", "description": "fade to black ", "price": 12000},
+  "43.png": {"name": "power", "description": "blood devil sexyy ", "price": 12000},
+  "44.png": {"name": "garou", "description": "monster form ", "price": 12000},
+  "45.jpg": {"name": "crown", "description": "multi liner", "price": 12000},
+
+}
+
+
+# Constants
+CARDS_PER_PAGE = 4
 @bot.command(name='cardshop')
 @is_registered()
 async def card_shop(ctx):
