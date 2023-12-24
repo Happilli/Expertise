@@ -1,6 +1,7 @@
 import os
 import discord
 from discord.ext import commands, tasks, menus
+from discord.ext.commands import Paginator
 import logging
 import json
 import asyncio
@@ -18,6 +19,7 @@ import imageio
 from discord.ui import View
 import io
 import random
+from io import BytesIO
 
 # Define the path to the folder containing your background images
 BACKGROUND_FOLDER = './Assets/Backgrounds/'
@@ -62,6 +64,19 @@ logger.setLevel(logging.INFO)
 async def hello(ctx):
     await ctx.send("Hello, I am your flexible bot!")
 
+# @bot.command(name='emoji', help='Display the emojis available on the server')
+# async def list_emojis(ctx):
+#     emojis = [emoji for emoji in ctx.guild.emojis]
+
+#     if emojis:
+#         # Split the list into chunks of 2000 characters or less
+#         chunks = [emojis[i:i + 10] for i in range(0, len(emojis), 10)]
+
+#         for chunk in chunks:
+#             emoji_list = ', '.join(str(emoji) for emoji in chunk)
+#             await ctx.send(f'Emojis on this server: {emoji_list}')
+#     else:
+#         await ctx.send('No emojis found on this server.')
 
 # Load registered user IDs from the accounts.txt file
 registered_users = set()
@@ -691,172 +706,103 @@ class BackgroundShopMenu(menus.Menu):
             await self.message.edit(embed=self.get_page_embed())
 
 
-@bot.command(name='viewbg')
-@is_registered()  # Assuming you have an is_registered decorator for user registration
-async def view_background(ctx, background_id: int):
-    background_folder = 'Assets/Backgrounds/'  # Define your background folder
 
-    # Check if the requested background ID exists
-    if background_id in background_descriptions:
-        # Determine the file extension based on the existence of JPG, PNG, and GIF files
-        jpg_background = os.path.join(background_folder, f'{background_id}.jpg')
-        png_background = os.path.join(background_folder, f'{background_id}.png')
-        gif_background = os.path.join(background_folder, f'{background_id}.gif')
+async def image_to_bytes(image):
+  image_bytes_io = BytesIO()
+  image.save(image_bytes_io, format='PNG')
+  image_bytes_io.seek(0)
+  return image_bytes_io
 
-        if os.path.exists(jpg_background):
-            selected_background = f'{background_id}.jpg'
-        elif os.path.exists(png_background):
-            selected_background = f'{background_id}.png'
-        elif os.path.exists(gif_background):
-            selected_background = f'{background_id}.gif'
-        else:
-            await ctx.send('Background image not found.')
-            return
-
-        background_path = os.path.join(background_folder, selected_background)
-
-        # Get the description for the selected background from the imported background_descriptions dictionary
-        description = background_descriptions.get(background_id, "No Description")
-
-        # Create an embedded message
-        embed = discord.Embed(
-            title=f'Viewing Background {background_id}',
-            description=description,  # Set the description of the image
-            color=discord.Color.blue()  # You can change the color as needed
-        )
-
-        # Add the selected background image as a field in the embedded message
-        if selected_background.endswith('.gif'):
-            embed.set_image(url=f"attachment://{selected_background}")
-        else:
-            embed.set_image(url=f"attachment://{selected_background}")
-
-        # Get the price for the selected background from the imported background_prices dictionary
-        price = background_prices.get(background_id, "N/A")  # Get the price or "N/A" if not found
-
-        # Add the price to the embedded message
-        embed.add_field(name="Price", value=f"{price} redants", inline=False)
-
-        # Send the embedded message with the selected background image as an attachment
-        with open(background_path, 'rb') as background_file:
-            file = discord.File(background_file, filename=selected_background)
-            await ctx.send(embed=embed, file=file)
-    else:
-        await ctx.send('Invalid background ID.')
-
-
-# Define the path to the folder containing background images
-MY_FOLDER = './Assets/Backgrounds/'
-
-
-@bot.command()
+@bot.command(name='showroom')
 @is_registered()
-async def buybg(ctx, background_id: int):
-    user_id = str(ctx.author.id)
+async def showroom(ctx, *args):
+    # Send a loading message
+    loading_message = await ctx.send("Loading...")
 
-    # Load the currency data from the JSON file
-    with open('Currency/currency.json', 'r') as currency_file:
-        currency_data = json.load(currency_file)
+    folder_path = "Assets/Backgrounds/"  # Replace with the actual path to your image folder
 
-    # Check if the provided background_id is valid
-    if 1 <= background_id <= len(background_prices):
-        price = background_prices[background_id]
+    images = [f for f in os.listdir(folder_path) if f.endswith(('.jpg', '.jpeg', '.png'))]
 
-        # Check if the user has enough redants to make the purchase
-        if currency_data.get(user_id, 0) >= price:
-            # Deduct the cost of the background from the user's balance
-            currency_data[user_id] = currency_data.get(user_id, 0) - price
+    if not images:
+        await ctx.send("No images found in the specified folder.")
+        return
 
-            # Determine the extension type based on the background_id
-            if background_id in [11, 69, 81, 93, 94, 95, 96, 98, 99, 100, 101, 104, 107, 108, 109, 111, 116 ]:  # Background 11 is in PNG format
-                extension = 'png'
-            # elif background_id in [67, 68]:  # Backgrounds 67 and 68 are in GIF format
-            #     extension = 'gif'
-            else:
-                extension = 'jpg'  # All other backgrounds are in JPG format
+    # Set the target compression factor
+    compression_factor = 5
 
-            # Generate the background URL based on the background_id and extension
-            background_url = os.path.join(MY_FOLDER, f'{background_id}.{extension}')
+    # Original image size
+    original_width = 1440
+    original_height = 552
 
-            # Get the description for the purchased background from the imported background_descriptions dictionary
-            description = background_descriptions.get(background_id, "No Description")
+    # Calculate the compressed image size
+    compressed_width = original_width // compression_factor
+    compressed_height = original_height // compression_factor
 
-            # Update the user's profile with the purchased background URL and description
-            user_profiles[user_id]['background_url'] = background_url
-            user_profiles[user_id]['background_description'] = description
-            save_user_profiles()  # You need to implement this function to save user profiles
+    # Set the desired aspect ratio of the canvas
+    desired_aspect_ratio = 16 / 9  # You can adjust this based on your preference
 
-            # Update the currency data in the JSON file
-            with open('Currency/currency.json', 'w') as currency_file:
-                json.dump(currency_data, currency_file, indent=4)  # Indent for better readability
-
-            # Send a confirmation message to the user with the description
-            await ctx.send(
-                f'You have successfully purchased Background ``{background_id}`` named  ``{description}``. Your new background has been applied to your render.\n'
-            )
-
-        else:
-            await ctx.send("You don't have enough redants to purchase this background.")
+    # Check if there are custom row and column arguments
+    if args:
+        try:
+            row, col = map(int, args[0].split('x'))
+            if row <= 0 or col <= 0:
+                raise ValueError("Row and column must be positive integers.")
+            if row * col > len(images):
+                raise ValueError("Invalid row and column values.")
+        except ValueError as e:
+            await ctx.send(f"Invalid argument: {e}")
+            return
     else:
-        await ctx.send("Invalid background ID.")
+        # Default row and column if no arguments are provided
+        row, col = 0, 0
 
+    # Calculate the number of rows and columns
+    images_per_row = 10
+    images_per_column = (len(images) + images_per_row - 1) // images_per_row
 
-# Define the path to the folder containing card images
-card_folder = './Assets/Cards/'  # Update with your actual path
+    # Adjust the canvas dimensions based on the desired aspect ratio
+    canvas_width = compressed_width * images_per_row
+    canvas_height = int(canvas_width / desired_aspect_ratio)
 
-# Define card information with descriptions and prices
-card_info = {
-  "1.jpg": {"name": "Sasuke", "description": "Akatsuki version", "price": 5100},
-  "2.jpg": {"name": "Goku", "description": "version Ultra instinct !", "price": 15000},
-  "3.jpg": {"name": "Gojo", "description": "Gojo the free version", "price": 20000},
-  "4.jpg": {"name": "senku", "description": "dr. stone scienctist prehstoric ", "price": 5000},
-  "5.jpg": {"name": "nagi", "description": "blue lock : lazy genius", "price": 5900},
-  "6.jpg": {"name": "bachira", "description": "Blue lock: monster inside me ", "price": 10000},
-  "7.jpg": {"name": "kaguya", "description": "shinomiya kaguya the sexy ", "price": 9000},
-  "8.jpg": {"name": "Esdeath", "description": "the fallen angel: ice princess ", "price": 14000},
-  "9.jpg": {"name": "byakyuya", "description": "senbon zakura kageyoshi", "price": 12000},
-  "10.jpg": {"name": "killua", "description": "fast AF", "price": 4000},
-  "11.jpg": {"name": "Sukuna", "description": "greatest curse spirit", "price": 18000},
-  "12.jpg": {"name": "Saitama", "description": "Can solo your fav anime-verse", "price": 25000},
-  "13.jpg": {"name": "nami", "description": "weather babe", "price": 11000},
-  "14.jpg": {"name": "ace", "description": "fire fist asce", "price": 4900},
-  "15.jpg": {"name": "zoro", "description": "king of the hell", "price": 17000},
-  "16.jpg": {"name": "luffy", "description": "future king of the pirates !", "price": 21000},
-  "17.jpg": {"name": "sakamoto", "description": "have u heard of me?", "price": 15000},
-  "18.jpg": {"name": "killua2", "description": "fast AF boiee", "price": 14000},
-  "19.jpg": {"name": "usopp", "description": "greastest god of al time, d god, shogei king", "price": 18000},
-  "20.jpg": {"name": "kurapika", "description": "literally , takne a coffin for the enemy ", "price": 25000},
-  "21.jpg": {"name": "giyu", "description": "shinobu's babe fr.", "price": 12000},
-  "22.jpg": {"name": "l", "description": "hmm, the best genus ever has high iq AF", "price": 13000},
-  "23.jpg": {"name": "shanks", "description": "has the best emperor haki ever !", "price": 18000},
-  "24.jpg": {"name": "gon", "description": "his daddy left him, xd", "price": 21000},
-  "25.jpg": {"name": "light", "description": "kira aka kami sama xD", "price": 12000},
-  "26.jpg": {"name": "rin", "description": "da' wablu guy ", "price": 24000},
-  "27.jpg": {"name": "sanji", "description": "ladies rikkybell aka chef ", "price": 19000},
-  "28.jpg": {"name": "franky", "description": "robotic pirate ", "price": 9000},
-  "29.jpg": {"name": "chopper", "description": "big mom babe", "price": 7500},
-  "30.jpg": {"name": "brook", "description": "panty lorde ", "price": 7000},
-  "31.jpg": {"name": "robin", "description": "babe material  ", "price": 6500},
-  "32.jpg": {"name": "law", "description": "water law trafalgar d. shambles ", "price": 18000},
-  "33.jpg": {"name": "mori", "description": "bulies DBZ ? ", "price": 17000},
-  "34.jpg": {"name": "mikey", "description": "KIck lee  ", "price": 2500},
-  "35.jpg": {"name": "ichigo", "description": "shinigami, quincy, fullbringer maybe future soul king  ", "price": 17500},
-  "36.jpg": {"name": "itachi", "description": "ur already in my genjutsu...  ", "price": 17500},
-  "37.jpg": {"name": "samrick", "description": "DEv photo.. ", "price": 175000},
-  "38.jpg": {"name": "ryuma", "description": "king of swords : wano hero ", "price": 11500},
-  "39.jpg": {"name": "raiden", "description": "raiden babe shogun : genshin  ", "price": 12500},
-  "40.jpg": {"name": "rias", "description": "boob ?  ", "price": 50000},
-  "41.jpg": {"name": "aot", "description": "attk on titan wall scene ", "price": 20000},
-  "42.png": {"name": "guts", "description": "fade to black ", "price": 12000},
-  "43.png": {"name": "power", "description": "blood devil sexyy ", "price": 12000},
-  "44.png": {"name": "garou", "description": "monster form ", "price": 12000},
-  "45.jpg": {"name": "crown", "description": "multi liner", "price": 12000},
+    canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
+    draw = ImageDraw.Draw(canvas)
 
-}
+    image_width = compressed_width
+    image_height = compressed_height
 
+    for i, image_name in enumerate(images):
+        image_path = os.path.join(folder_path, image_name)
+        img = Image.open(image_path)
+        img = img.resize((image_width, image_height), Image.NEAREST)
+        x = (i % images_per_row) * image_width
+        y = (i // images_per_row) * image_height
+        canvas.paste(img, (x, y))
 
-# Constants
-CARDS_PER_PAGE = 4
+        # Add divider lines after every image
+        draw.line([(0, y + image_height), (canvas_width, y + image_height)], fill=(0, 0, 0), width=2)
+
+    # If custom row and column are specified, display only that image
+    if args:
+        cell_index = (row - 1) * images_per_row + (col - 1)
+        if 0 <= cell_index < len(images):
+            image_name = images[cell_index]
+            image_path = os.path.join(folder_path, image_name)
+            img = Image.open(image_path)
+            img = img.resize((canvas_width, canvas_height), Image.NEAREST)
+            canvas.paste(img, (0, 0))
+            await ctx.send(f"Here is the image located in Row {row}, Column {col}.")
+        else:
+            await ctx.send("Invalid row and column values.")
+
+    # Save the canvas as a BytesIO object
+    image_bytes = await image_to_bytes(canvas)
+
+    # Send the canvas as an image
+    await ctx.send(file=discord.File(image_bytes, filename="canvas.png"))
+
+    # Remove loading message
+    await loading_message.delete()
+
 
 @bot.command(name='cardshop')
 @is_registered()
@@ -1297,42 +1243,49 @@ rank_thresholds = {
     "Supreme": 210,
     "Heroic": 340,
     "Legend": 550,
-    "Saiyan": 850
+    "Ultimate": 850
 }
 
 
 @bot.command()
 @is_registered()
 async def tierlist(ctx):
-  # Define the rank thresholds
-  rank_thresholds = {
-      "Novice": 0,
-      "Rookie": 10,
-      "Stone": 20,
-      "Bronze": 30,
-      "Silver": 50,
-      "Golden": 80,
-      "Titan": 130,
-      "Supreme": 210,
-      "Heroic": 340,
-      "Legend": 550,
-      "Saiyan": 850
-  }
+    # Define the rank thresholds and emojis
+    rank_data = {
+        "Novice": {"threshold": 0, "emoji": "<:rankwc_novice:1188559196019499018>"},
+        "Rookie": {"threshold": 10, "emoji": "<:rookieMP:1188559384217915533>"},
+        "Stone": {"threshold": 20, "emoji": "<:stone_rank:1188559590808354846>"},
+        "Bronze": {"threshold": 30, "emoji": "<:Bronze_Rank:1188559841673871411>"},
+        "Silver": {"threshold": 50, "emoji": "<:silverrank:1188558873469145189>"},
+        "Golden": {"threshold": 80, "emoji": "<:Golden:1188560686444449903>"},
+        "Titan": {"threshold": 130, "emoji": "<:titan:1188560113166991481>"},
+        "Supreme": {"threshold": 210, "emoji": "<:Lord_SUPREME:1188561208522067988>"},
+        "Heroic": {"threshold": 340, "emoji": "<:HEROIC:1188560943504969728>"},
+        "Legend": {"threshold": 550, "emoji": "<:legend:1188561412516237423>"},
+        "Ultimate": {"threshold": 850, "emoji": "<:pikacool:1184901411633369089>"}
+    }
 
-  # Create an embedded message to display the tier list
-  embed = discord.Embed(
-      title='Tier List',
-      description=
-      'Here are the available ranks and the required number of wins to achieve them:',
-      color=discord.Color.gold()  # Customize the color
-  )
+    # Create an embedded message to display the tier list
+    embed = discord.Embed(
+        title='Tier List',
+        description='Here are the available ranks and the required number of wins to achieve them:',
+        color=discord.Color.gold()  # Customize the color
+    )
 
-  for rank, wins_required in rank_thresholds.items():
-    embed.add_field(name=rank,
-                    value=f'Wins Required: {wins_required}',
+    # Add a field for the table with two columns
+    table_content = ""
+    for rank, data in rank_data.items():
+        table_content += f". | {data['threshold']} | {data['emoji']} {rank}\n"
+
+    embed.add_field(name='Wins Needed | Ranks',
+                    value=table_content,
                     inline=True)
 
-  await ctx.send(embed=embed)
+    # Add a footer with an image
+    embed.set_footer(text='here are the ranks with the badges and threeshold to accquire it', icon_url='https://media.discordapp.net/attachments/1145967795184607282/1185521342532046918/R.png?ex=65992449&is=6586af49&hm=1d401c3f7c6c16dbc2b6d5840f1ea0756566dd73d3cb15909fb3cc485804cc4b&=&format=webp&quality=lossless&width=450&height=450')
+
+    # Send the embedded message to the Discord channel
+    await ctx.send(embed=embed)
 
 
 @bot.command()
@@ -1346,19 +1299,20 @@ async def viewrank(ctx):
         user = ctx.author
         user_avatar = user.avatar.url if user.avatar else user.default_avatar.url
 
-        # Define a dictionary mapping ranks to text-based emojis
+        # Define a dictionary mapping ranks to server emojis
+        # You can replace 'EMOJI_NAME' with the actual name of your server emoji
         rank_icons = {
-            "Novice": "😊",
-            "Rookie": ":full_moon_with_face:",
-            "Stone": ":rock:",
-            "Bronze": "🥉",
-            "Silver": "🥈",
-            "Golden": "🥇",
-            "Titan": "🏋️‍♂️",
-            "Supreme": "👑",
-            "Heroic": "⚡",
-            "Legend": "🏆",
-            "Saiyan": "🐉"
+            "Novice": "<:rankwc_novice:1188559196019499018>",
+            "Rookie": "<:rookieMP:1188559384217915533> ",
+            "Stone": "<:stone_rank:1188559590808354846> ",
+            "Bronze": "<:Bronze_Rank:1188559841673871411> ",
+            "Silver": "<:silverrank:1188558873469145189>",
+            "Golden": "<:Golden:1188560686444449903> ",
+            "Titan": "<:titan:1188560113166991481> ",
+            "Supreme": "<:Lord_SUPREME:1188561208522067988>",
+            "Heroic": "<:HEROIC:1188560943504969728> ",
+            "Legend": "<:legend:1188561412516237423> ",
+            "Ultimate": "<:pikacool:1184901411633369089> "
         }
 
         embed = discord.Embed(
