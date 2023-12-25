@@ -821,106 +821,112 @@ async def image_to_bytes(image):
   image_bytes_io.seek(0)
   return image_bytes_io
 
-@bot.command(name='showroom')
+@bot.command(name ="canvas")
 @is_registered()
 async def showroom(ctx, *args):
-    # Send a loading message
-    loading_message = await ctx.send("Loading...")
+  # Send a loading message
+  loading_message = await ctx.send("Loading...")
 
-    folder_path = "Assets/Backgrounds/"  # Replace with the actual path to your image folder
+  folder_path = "Assets/Backgrounds/"  # Replace with the actual path to your image folder
 
-    images = [f for f in os.listdir(folder_path) if f.endswith(('.jpg', '.jpeg', '.png'))]
+  images = [f for f in os.listdir(folder_path) if f.endswith(('.jpg', '.jpeg', '.png'))]
 
-    if not images:
-        await ctx.send("No images found in the specified folder.")
-        return
+  if not images:
+      await ctx.send("No images found in the specified folder.")
+      return
 
-    # Set the target compression factor
-    compression_factor = 5
+  # Set the target compression factor
+  compression_factor = 5
 
-    # Original image size
-    original_width = 1440
-    original_height = 552
+  # Original image size
+  original_width = 1440
+  original_height = 552
 
-    # Calculate the compressed image size
-    compressed_width = original_width // compression_factor
-    compressed_height = original_height // compression_factor
+  # Calculate the compressed image size
+  compressed_width = original_width // compression_factor
+  compressed_height = original_height // compression_factor
 
-    # Set the desired aspect ratio of the canvas
-    desired_aspect_ratio = 16 / 9  # You can adjust this based on your preference
+  # Set the desired aspect ratio of the canvas
+  desired_aspect_ratio = 16 / 9  # You can adjust this based on your preference
 
-    # Check if there are custom row and column arguments
-    if args:
-        try:
-            row, col = map(int, args[0].split('x'))
-            if row <= 0 or col <= 0:
-                raise ValueError("Row and column must be positive integers.")
-            if row * col > len(images):
-                raise ValueError("Invalid row and column values.")
-        except ValueError as e:
-            await ctx.send(f"Invalid argument: {e}")
-            return
-    else:
-        # Default row and column if no arguments are provided
-        row, col = 0, 0
+  # Check if there are custom row and column arguments
+  if args:
+      try:
+          row, col = map(int, args[0].split('x'))
+          if row <= 0 or col <= 0:
+              raise ValueError("Row and column must be positive integers.")
+          if row * col > len(images):
+              raise ValueError("Invalid row and column values.")
+      except ValueError as e:
+          await ctx.send(f"Invalid argument: {e}")
+          return
+  else:
+      # Default row and column if no arguments are provided
+      row, col = 0, 0
 
-    # Calculate the number of rows and columns
-    images_per_row = 10
-    images_per_column = (len(images) + images_per_row - 1) // images_per_row
+  # Calculate the number of rows and columns
+  images_per_row = 10
+  images_per_column = (len(images) + images_per_row - 1) // images_per_row
 
-    # Adjust the canvas dimensions based on the desired aspect ratio
-    canvas_width = compressed_width * images_per_row
-    canvas_height = int(canvas_width / desired_aspect_ratio)
+  # Adjust the canvas dimensions based on the desired aspect ratio
+  canvas_width = compressed_width * images_per_row
+  canvas_height = int(canvas_width / desired_aspect_ratio)
 
-    canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
-    draw = ImageDraw.Draw(canvas)
+  canvas = Image.new('RGB', (canvas_width, canvas_height), 'white')
+  draw = ImageDraw.Draw(canvas)
 
-    image_width = compressed_width
-    image_height = compressed_height
+  image_width = compressed_width
+  image_height = compressed_height
 
-    for i, image_name in enumerate(images):
-        image_path = os.path.join(folder_path, image_name)
-        img = Image.open(image_path)
-        img = img.resize((image_width, image_height), Image.NEAREST)
-        x = (i % images_per_row) * image_width
-        y = (i // images_per_row) * image_height
-        canvas.paste(img, (x, y))
+  # Check if both row and column are zero (no custom row and column specified)
+  if row == 0 and col == 0:
+      # Display entire showroom
+      for i, image_name in enumerate(images):
+          image_path = os.path.join(folder_path, image_name)
+          img = Image.open(image_path)
+          img = img.resize((image_width, image_height), Image.NEAREST)
+          x = (i % images_per_row) * image_width
+          y = (i // images_per_row) * image_height
+          canvas.paste(img, (x, y))
 
-        # Add divider lines after every image
-        draw.line([(0, y + image_height), (canvas_width, y + image_height)], fill=(0, 0, 0), width=2)
+          # Add divider lines after every image
+          draw.line([(0, y + image_height), (canvas_width, y + image_height)], fill=(0, 0, 0), width=2)
 
-    # If custom row and column are specified, display only that image
-    if args:
-        cell_index = (row - 1) * images_per_row + (col - 1)
-        if 0 <= cell_index < len(images):
-            image_name = images[cell_index]
-            image_path = os.path.join(folder_path, image_name)
-            img = Image.open(image_path)
-            img = img.resize((canvas_width, canvas_height), Image.NEAREST)
-            canvas.paste(img, (0, 0))
+      # Save the canvas as a BytesIO object
+      image_bytes = await image_to_bytes(canvas)
 
-            # Display the image ID before the image and provide suggestions below the image
-            await ctx.send(f"Here is the image with ID {image_name[:-4]} located in Row {row}, Column {col}.")
+      # Send the canvas as an image
+      await ctx.send(file=discord.File(image_bytes, filename="canvas.png"))
 
-            # Save the canvas as a BytesIO object
-            image_bytes = await image_to_bytes(canvas)
+      # Provide suggestions below the image
+      await ctx.send("Note: u can to -> canvas ``Row``x``Column`` to view specific image from canvas i.e, ``canvas 2x2`` will show u the image from row = 2 and column = 2, note: small x is the the specific specifier here")
+  else:
+      # Custom row and column logic
+      cell_index = (row - 1) * images_per_row + (col - 1)
+      if 0 <= cell_index < len(images):
+          image_name = images[cell_index]
+          image_path = os.path.join(folder_path, image_name)
+          img = Image.open(image_path)
+          img = img.resize((canvas_width, canvas_height), Image.NEAREST)
+          canvas.paste(img, (0, 0))
 
-            # Send the canvas as an image
-            await ctx.send(file=discord.File(image_bytes, filename="canvas.png"))
+          # Display the image ID before the image and provide suggestions below the image
+          await ctx.send(f"Here is the image with ID {image_name[:-4]} located in Row {row}, Column {col}.")
 
-            # Provide suggestions below the image
-            await ctx.send(f"For more info, use `e!viewbg {image_name[:-4]}` or buy it with `e!buybg {image_name[:-4]}`.")
-        else:
-            # If invalid row and column values are provided, send an error message
-            await ctx.send("Invalid row and column values.")
-    else:
-        # If no arguments are provided, suggest using parameters
-        await ctx.send("You can use parameters like `showroom 5x3` to display a specific image. "
-                       f"For more info on a specific image, use `e!viewbg [id]` or buy it with `e!buybg [id]`.")
+          # Save the canvas as a BytesIO object
+          image_bytes = await image_to_bytes(canvas)
 
-    # Remove loading message
-    await loading_message.delete()
+          # Send the canvas as an image
+          await ctx.send(file=discord.File(image_bytes, filename="canvas.png"))
 
+          # Provide suggestions below the image
+          await ctx.send(f"For more info, use `e!viewbg {image_name[:-4]}` or buy it with `e!buybg {image_name[:-4]}`.")
+      else:
+          # If invalid row and column values are provided, send an error message
+          await ctx.send("Invalid row and column values.")
+
+  # Remove loading message
+  await loading_message.delete()
 
 
 
