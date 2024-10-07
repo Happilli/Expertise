@@ -1,2 +1,1 @@
-In case, if have some croseror isuue ...
-for the data collection 
+## discord pokemon based bot \\ structure and outer skeleton
