@@ -19,7 +19,7 @@ class CurrencyManager:
             json.dump(self.currency_data, file, indent=4)
 
     def get_balance(self, user_id):
-        return self.currency_data.get(str(user_id), 0)  # Default balance is 0
+        return self.currency_data.get(str(user_id), 0) 
 
     def set_balance(self, user_id, balance):
         self.currency_data[str(user_id)] = balance
